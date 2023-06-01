@@ -3,18 +3,9 @@
 #       return fib(n - 1) + fib(n - 2);
 #   }
 
-.text
-.globl main
 
-main:
-    li $a0, 10          # fib(n)
-    jal fib
-    move $a0, $v0       # print_int
-    li $v0, 1 
-    syscall
-    li $v0, 10          # exit
-    syscall
-
+#  Returns fib($a0) in $v0
+#  Note this changes $a0 and $t0 (someone can fix this if they want)
 fib:
     slti $t0, $a0, 2    # if (n < 2) return n;
     beq $t0, $zero, fibrec
