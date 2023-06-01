@@ -1,3 +1,8 @@
+ # calculates factorial with floats (iteratively)
+ # stores result in $f12 control is done with float regs
+
+
+
  .text
  .globl __start
 __start:

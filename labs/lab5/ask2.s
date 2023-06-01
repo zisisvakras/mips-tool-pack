@@ -1,3 +1,7 @@
+# USELESS
+# bunch of operations Xergias made us do to expiriment with floats
+
+
 .text
  .globl __start
 __start:

@@ -1,3 +1,5 @@
+# just reads and prints a float
+
 .text
  .globl __start
 __start:
@@ -13,5 +15,4 @@ syscall
 
  .data
 n: .word 25
-msg1: .asciiz "! is :"
 endl: .asciiz "\n" 
