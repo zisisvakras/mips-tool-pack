@@ -2,7 +2,7 @@
 A collection of useful mips templates
 
 # TODO list
-- test done funcs
+- test stlen,streq,strneq
 - strcmp (like C)
 - read_binary
 - read_octal
@@ -12,6 +12,6 @@ A collection of useful mips templates
 - print_hex
 - pow
 - ~~factorial and tested~~
-- while (template)
-- for (template)
-- do while (template)
+- ~~while (template)~~
+- ~~for (template)~~
+- ~~do while (template)~~
