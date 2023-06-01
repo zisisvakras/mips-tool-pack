@@ -10,7 +10,7 @@ A collection of useful mips templates
 - print_binary
 - print_octal
 - print_hex
-- pow
+- ~~pow and tested~~
 - ~~factorial and tested~~
 - ~~while (template)~~
 - ~~for (template)~~
