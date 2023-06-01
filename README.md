@@ -11,7 +11,7 @@ A collection of useful mips templates
 - print_octal
 - print_hex
 - pow
-- factorial
+- ~~factorial and tested~~
 - while (template)
 - for (template)
 - do while (template)
