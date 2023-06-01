@@ -7,12 +7,12 @@
 .globl main
 
 main:
-    li $a0, 10    # fib(n)
+    li $a0, 10          # fib(n)
     jal fib
-    move $a0, $v0 # print_int
+    move $a0, $v0       # print_int
     li $v0, 1 
     syscall
-    li $v0, 10    # exit
+    li $v0, 10          # exit
     syscall
 
 fib:
