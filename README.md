@@ -2,6 +2,7 @@
 A collection of useful mips templates
 
 # TODO list
+- test done funcs
 - strcmp (like C)
 - read_binary
 - read_octal
