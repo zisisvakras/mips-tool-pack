@@ -1,7 +1,3 @@
-.data
-    endl: .asciiz "\n"
-    # buffer: .space 20
-    # array: .word 20, 30, 40
 .text
 .globl main
 
@@ -88,3 +84,27 @@ read_char:
     li $v0, 12
     syscall
     jr $ra
+
+#  MESSAGES
+.data
+    ReadInt: .asciiz "Insert an integer :"
+    ReadFloating: .asciiz "Insert a float :"
+    ReadDoubleNum: .asciiz "Insert a double :"
+    ReadStringCharacters: .asciiz "Insert a string :"
+    Result: .asciiz "The result is :"
+    Final: .asciiz "The final <type> is: "
+    Difference: .asciiz "The difference is :"
+    Quotient: .asciiz "The Quotient is :"
+    Remainder: .asciiz "The Remainder is :"
+    Factorial: .asciiz "The factorial of the number "
+    General_Start: .asciiz "The "
+    Power: .asciiz " th power of the number "
+    General_End: .asciiz " is: "
+    StringMessage: .asciiz "The final string is: "
+    Converted1: .asciiz "The converted float is: "
+    Converted2: .asciiz " from: "
+    Endl: .asciiz "\n"
+    Buffer: .asciiz "\nEND OF PROGRAM\n"
+    ErrorMessages: .asciiz "The character is not a number\n"
+    EqualMessage: .asciiz "The strings are equal"
+    NotEqualMessage: .asciiz "The strings are not equal"
