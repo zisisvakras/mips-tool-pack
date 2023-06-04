@@ -6,8 +6,8 @@ streq:
     sw $t1, 8($sp)
     sw $t2, 4($sp)
     sw $t3, 0($sp)
-    addi $t2, $a0, $zero # load 0 in t2 (it will be our counter)
-    addi $t3, $a1, $zero # load 0 in t2 (it will be our counter)
+    add $t2, $a0, $zero # load byte 0 from the string in t2 (it will be our counter)
+    add $t3, $a1, $zero # respectively for t3
     streqloop:
     lb $t0, 0($t2)
     lb $t1, 0($t3)
@@ -41,8 +41,8 @@ strneq:
     sw $t1, 8($sp)
     sw $t2, 4($sp)
     sw $t3, 0($sp)
-    addi $t2, $a0, $zero # load 0 in t2 (it will be our counter)
-    addi $t3, $a1, $zero # load 0 in t2 (it will be our counter)
+    add $t2, $a0, $zero # load byte 0 from the string in t2 (it will be our counter)
+    add $t3, $a1, $zero # respectively for t3
     strneqloop:
     lb $t0, 0($t2)
     lb $t1, 0($t3)
