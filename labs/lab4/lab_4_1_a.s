@@ -1,10 +1,5 @@
 #################################################
 #                                               #
-# lab4_1a.s                                     #
-# stack exercise 1 (to be completed)            #
-#                                               #
-#################################################
-#                                               #
 #                Stack Exercise                 #
 #                                               #
 #################################################
@@ -12,7 +7,7 @@
 .text
 .globl __start
 __start:
-# start of main program
+    # start of main program
     # li $a0,-10 # Initialize variables
     # li $a1,-30 #
     # li $a2,120 #
@@ -23,38 +18,38 @@ __start:
     lw $a2, a2
     lw $a3, a3
 
-    jal MinMax  # jump to the function MinMax and store to $ra, the address 
-                # of the next line of code in this procedure
+    jal MinMax    # jump to the function MinMax and store to $ra, the address 
+                  # of the next line of code in this procedure
 
-    move $t0,$v0    # move the results of the MinMax function in temporary registers 
+    move $t0,$v0  # move the results of the MinMax function in temporary registers 
     move $t1,$v1
 
     la $a0,max      
     li $v0,4
-    syscall # display "Max is :"
+    syscall       # display "Max is :"
 
     move $a0,$t1
     li $v0,1
-    syscall # display max
+    syscall       # display max
 
     la $a0,endl
     li $v0,4
-    syscall # display end of line
+    syscall       # display end of line
 
     la $a0,min
     li $v0,4
-    syscall # display "Min is :"
+    syscall       # display "Min is :"
 
     move $a0,$t0
     li $v0,1
-    syscall # display min
+    syscall       # display min
 
     la $a0,endl
     li $v0,4
-    syscall # display end of line
+    syscall       # display end of line
 
     li $v0,10
-    syscall # exit
+    syscall       # exit
 # end of main program
 # start of procedure
 #
@@ -156,7 +151,6 @@ __start:
 
 # end of procedure
 
-
 .data
 a0: .word -2534
 a1: .word 3439043
@@ -165,8 +159,3 @@ a3: .word 243
 max: .asciiz "Max is : "
 min: .asciiz "Min is : "
 endl: .asciiz "\n"
-#################################################
-# #
-# End of program #
-# #
-#################################################

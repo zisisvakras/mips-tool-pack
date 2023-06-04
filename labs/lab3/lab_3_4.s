@@ -1,9 +1,4 @@
 ###################################################
-###################################################
-#                                                 #
-#                   text segment                  #
-#                                                 #
-###################################################
 #                                                 #
 #             Lower Case to Upper Case            #
 #              for a 20-letter string             #
@@ -14,12 +9,12 @@
 .globl __start
 
 __start: 
-    la $a0, buffer # read string
+    la $a0, buffer          # read string
     li $v0, 8
     syscall
 
-    addi $t5, $zero, 0  # initialize $t5 with 0 
-    addi $t3, $zero, 20 # initialize $t3 with 20
+    addi $t5, $zero, 0      # initialize $t5 with 0 
+    addi $t3, $zero, 20     # initialize $t3 with 20
 
     loop:
         la $t1, buffer      # load every time the address of label "buffer" in $t1
@@ -36,7 +31,7 @@ __start:
         blt $t5, $t3, loop  # if $t5 < 20 we continuew the loop
 
     print_string:
-        la $a0, buffer # print string
+        la $a0, buffer      # print string
         li $v0, 4
         syscall
 
@@ -44,24 +39,5 @@ __start:
         li $v0, 10
         syscall
 
-
-  
-    
-###################################################
-###################################################
-#                                                 #
-#                   data segment                  #
-#                                                 #
-###################################################
 .data
-
 buffer: .space 21
-
-
-###################################################
-###################################################
-#                                                 #
-#                   END OF FILE                   #
-#                                                 #
-###################################################
-
