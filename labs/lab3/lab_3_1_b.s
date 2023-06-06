@@ -1,16 +1,8 @@
-###################################################
-###################################################
-#                                                 #
-#                   text segment                  #
-#                                                 #
-###################################################
-#                                                 #
-#           Switch Case with Break                #
-#                                                 #
-###################################################
+#           Switch Case with Break                
 
 #The exact same program with lab5_3.1.a.s but with breaks in the end of every case
 #so only the first divisor if there is one, is printed
+
 .text
 .globl __start
 
@@ -68,15 +60,6 @@ __start:
         li $v0, 10
         syscall
 
-
-  
-    
-###################################################
-###################################################
-#                                                 #
-#                   data segment                  #
-#                                                 #
-###################################################
 .data
 
 even:  .asciiz "The number is divided by 2.\n"
@@ -84,11 +67,4 @@ three:  .asciiz "The number is divided by 3.\n"
 five:  .asciiz "The number is divided by 5.\n"
 none:  .asciiz "The number is divided by none.\n"
 
-
-###################################################
-###################################################
-#                                                 #
-#                   END OF FILE                   #
-#                                                 #
-###################################################
 

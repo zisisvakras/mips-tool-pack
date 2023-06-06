@@ -1,13 +1,4 @@
-#################################################
-#                                               #
-# lab4_2a.s                                     #
-# stack exercise 2 (to be completed)            #
-#                                               #
-#################################################
-#                                               #
-#        Recursive Procedure with Stack         #
-#                                               #
-#################################################
+#        Recursive Procedure with Stack  
 
 .text
 .globl __start
@@ -62,11 +53,7 @@ __start:
         move $v0, $a0           # move the new decreased number to $v0, which holds the result of a procedure   
         j proc                  # jump to precdure, so it is recursive
 # end of procedure
+
 .data
 prompt: .asciiz "Enter integer number :"
 endl: .asciiz "\n"
-#################################################
-# #
-# End of program #
-# #
-#################################################

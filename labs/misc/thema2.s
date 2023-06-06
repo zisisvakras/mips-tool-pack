@@ -1,17 +1,9 @@
-#################################################
-#												#
-#				text segment					#
-#												#
-#################################################
-#												#
-#	 String of Numbers in Octal System to		#
-#	  String of Numbers in Binary System        #
-#												#
-#################################################
+#	 String of Numbers in Octal System to		
+#	  String of Numbers in Binary System        
 
-	.text
-	.globl     __start	
-												#read first int and move it to a temp reg
+.text
+.globl     __start	
+												
 __start:
 
 	loop:
@@ -125,13 +117,7 @@ __start:
 		li 	$v0, 10
 		syscall				#au revoir...
 
-#################################################
-#			 									#
-#     	 	data segment						#
-#												#
-#################################################
-
-	.data
+.data
 endl: 					.asciiz 	"\n"
 buffer: 				.space      5
 error:                  .asciiz  "ERROR"
