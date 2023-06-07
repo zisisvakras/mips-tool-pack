@@ -1,4 +1,4 @@
-#           Read Integer and Print Integer       
+# Read Integer and Print Integer       
 
 .text
 .globl __start
@@ -18,9 +18,3 @@ __start:
 
     li $v0, 10      # exit
     syscall
-
-.data
-
-
-
-

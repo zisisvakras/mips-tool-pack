@@ -1,13 +1,13 @@
-#                   Last Carry  
+# Last Carry
 
 .text
 .globl __start
 
 __start: 
-    lw $t0, w1 # load a in $t0
-    lw $t1, w2 # load b in $t1
+    lw $t0, w1          # load a in $t0
+    lw $t1, w2          # load b in $t1
 
-    addu $t2, $t0, $t1 # unsigned addition of a and b 
+    addu $t2, $t0, $t1  # unsigned addition of a and b 
 
     nor $t2, $t2, $zero # not using nor and $zero os we can reverse the bits of $t2, in
                         # which the sum a + b is stored
@@ -27,7 +27,6 @@ __start:
 
     li $v0, 10          # exit
     syscall
-
 
 .data
 

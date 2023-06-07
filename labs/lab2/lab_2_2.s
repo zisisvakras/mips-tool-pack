@@ -1,11 +1,11 @@
-#        Little Endian to Big Endian              
+# Little Endian to Big Endian
 
 .text
 .globl __start
 
 __start: 
 
-    lw $t5, w1      # load the word (4 bytes) from address of label "w1", in $t5
+    lw $t5, w1          # load the word (4 bytes) from address of label "w1", in $t5
 
     # Least Significant Byte in place of Most Significant Byte
     sll $t0, $t5, 24    # shift left logical by 24 bits in the value that is stored in $t5,
@@ -42,4 +42,3 @@ __start:
 .data
 
 w1: .word 0x12345678
-

@@ -1,17 +1,20 @@
 #  Compares strings in $a0 and $a1
 #  Returns 1 if equal or 0 if not in $v0
 streq:
-    addi $sp, $sp, -12   # make space in stack
-    sw $t0, 8($sp)       # keep t0, t1, t2 in stack
-    sw $t1, 4($sp)
-    sw $t2, 0($sp)
-    li $t2, 0            # load 0 in t2 (it will be our counter)
+    addi $sp, $sp, -16   # make space in stack
+    sw $t0, 12($sp)      # keep t0, t1, t2, t3 in stack
+    sw $t1, 8($sp)
+    sw $t2, 4($sp)
+    sw $t3, 0($sp)
+    add $t2, $a0, $zero # load byte 0 from the string in t2 (it will be our counter)
+    add $t3, $a1, $zero # respectively for t3
     streqloop:
-    lb $t0, $t2($a0)
-    lb $t1, $t2($a1)
+    lb $t0, 0($t2)
+    lb $t1, 0($t3)
     bne $t0, $t1, streqexitno
     beq $t0, $zero, streqexityes
     addi $t2, $t2, 1
+    addi $t3, $t3, 1
     j streqloop
 
     streqexitno:
@@ -23,26 +26,30 @@ streq:
     j streqexit
 
     streqexit:
-    lw $t0, 8($sp)       # restore t0, t1, t2 from stack
-    lw $t1, 4($sp)
-    lw $t2, 0($sp)
-    addi $sp, $sp, 12
+    lw $t0, 12($sp)      # restore t0, t1, t2, t3 from stack
+    lw $t1, 8($sp)
+    lw $t2, 4($sp)
+    lw $t3, 0($sp)
+    addi $sp, $sp, 16
     jr $ra
 
 #  Compares strings in $a0 and $a1
 #  Returns 1 if not equal or 0 if they are, in $v0
 strneq:
-    addi $sp, $sp, -12   # make space in stack
-    sw $t0, 8($sp)       # keep t0, t1, t2 in stack
-    sw $t1, 4($sp)
-    sw $t2, 0($sp)
-    li $t2, 0            # load 0 in t2 (it will be our counter)
+    addi $sp, $sp, -16   # make space in stack
+    sw $t0, 12($sp)      # keep t0, t1, t2, t3 in stack
+    sw $t1, 8($sp)
+    sw $t2, 4($sp)
+    sw $t3, 0($sp)
+    add $t2, $a0, $zero # load byte 0 from the string in t2 (it will be our counter)
+    add $t3, $a1, $zero # respectively for t3
     strneqloop:
-    lb $t0, $t2($a0)
-    lb $t1, $t2($a1)
+    lb $t0, 0($t2)
+    lb $t1, 0($t3)
     bne $t0, $t1, strneqexitno
     beq $t0, $zero, strneqexityes
     addi $t2, $t2, 1
+    addi $t3, $t3, 1
     j strneqloop
 
     strneqexitno:
@@ -54,8 +61,9 @@ strneq:
     j strneqexit
 
     strneqexit:
-    lw $t0, 8($sp)       # restore t0, t1, t2 from stack
-    lw $t1, 4($sp)
-    lw $t2, 0($sp)
-    addi $sp, $sp, 12
+    lw $t0, 12($sp)      # restore t0, t1, t2, t3 from stack
+    lw $t1, 8($sp)
+    lw $t2, 4($sp)
+    lw $t3, 0($sp)
+    addi $sp, $sp, 16
     jr $ra
