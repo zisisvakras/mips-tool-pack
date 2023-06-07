@@ -1,11 +1,7 @@
-###################################################
-#                                                 #
-#           Switch Case with Break                #
-#                                                 #
-###################################################
-
+# Switch Case with Break
 # The exact same program with lab5_3.1.a.s but with breaks in the end of every case
 # so only the first divisor if there is one, is printed
+
 .text
 .globl __start
 
@@ -60,7 +56,7 @@ u3:
 exit:
     li $v0, 10
     syscall
-
+    
 .data
 
 even:  .asciiz "The number is divided by 2.\n"

@@ -1,8 +1,4 @@
-###################################################
-#                                                 #
-#           Read INteger and Print Integer        #
-#                                                 #
-###################################################
+# Read Integer and Print Integer       
 
 .text
 .globl __start

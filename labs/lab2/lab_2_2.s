@@ -1,8 +1,4 @@
-###################################################
-#                                                 #
-#        Little Endian to Big Endian              #
-#                                                 #
-###################################################
+# Little Endian to Big Endian
 
 .text
 .globl __start

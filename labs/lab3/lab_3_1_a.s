@@ -1,8 +1,4 @@
-###################################################
-#                                                 #
-#           Switch Case without Break             #
-#                                                 #
-###################################################
+# Switch Case without Break 
 
 .text
 .globl __start
@@ -51,11 +47,11 @@ u3:
     la $a0, none          # print message for perfect division with none           
     li $v0, 4
     syscall
-
+    
 exit:
     li $v0, 10
     syscall
-
+    
 .data
 
 even:  .asciiz "The number is divided by 2.\n"

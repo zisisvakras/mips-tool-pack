@@ -1,9 +1,5 @@
-###################################################
-#                                                 #
-#        Sum and Difference of 2 integers         #
-#                                                 #
-###################################################
-.text
+# Sum and Difference of 2 integers
+
 .globl __start
 
 __start: 

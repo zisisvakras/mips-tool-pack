@@ -1,9 +1,5 @@
-###################################################
-#                                                 #
-#             Lower Case to Upper Case            #
-#              for a 20-letter string             #
-#                                                 #
-###################################################
+# Lower Case to Upper Case
+# for a 20-letter string 
 
 .text
 .globl __start

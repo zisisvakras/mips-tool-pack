@@ -1,8 +1,4 @@
-###################################################
-#                                                 #
-#    Read String and Decrease its Length to 5     #
-#                                                 #
-###################################################
+# Read String and Decrease its Length to 5
 
 .text
 .globl __start

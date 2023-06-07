@@ -1,8 +1,4 @@
-###################################################
-#                                                 #
-#     Load from Address as Unsigned and Signed    #
-#                                                 #
-###################################################
+# Load from Address as Unsigned and Signed
 
 .text
 .globl __start
@@ -32,7 +28,7 @@ __start:
     
     li $v0, 10      # exit
     syscall
-
+    
 .data
 
 b1: .byte 0x01, 0x02, 0x03, 0x04, 0x81, 0x82, 0x83, 0x84
