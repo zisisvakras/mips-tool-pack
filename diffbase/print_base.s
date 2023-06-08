@@ -69,7 +69,8 @@ print_bin:
     jr $ra
 
 # print an number in a given base
-# $a0: base $a1: the number to print
+# $a0: base 
+# $a1: the number to print
 # returns $v0: the number of chars printed
 print_val:
     addi $sp, $sp, -52  # 4 regs + 33byte string + alignment
