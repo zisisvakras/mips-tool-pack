@@ -104,7 +104,7 @@ read_char:
     Converted1: .asciiz "The converted float is: "
     Converted2: .asciiz " from: "
     Endl: .asciiz "\n"
-    Buffer: .asciiz "\nEND OF PROGRAM\n"
+    Programend: .asciiz "\nEND OF PROGRAM\n"
     ErrorMessages: .asciiz "The character is not a number\n"
     EqualMessage: .asciiz "The strings are equal"
     NotEqualMessage: .asciiz "The strings are not equal"
