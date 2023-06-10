@@ -27,6 +27,19 @@
 .globl main
 
 main:
+
+    jal read_double
+
+    mov.d $f12, $f0
+
+    jal print_double
+    jal print_endl
+
+    cvt.w.d $f0, $f0 # Converts the value of $f0 into a word
+    mfc1 $t0, $f0 # Moves the value of $f0 into $t0 # NOTE: here destination is first
+
+    move $a0, $t0
+    jal print_int
     j exit
 
 
