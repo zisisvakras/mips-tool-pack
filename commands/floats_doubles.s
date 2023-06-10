@@ -37,6 +37,8 @@ sub.s $f0, $f0, $f1 # Subtracts the value of $f1 from $f0 and stores it in $f0
 mul.s $f0, $f0, $f1 # Multiplies the value of $f0 and $f1 and stores it in $f0
 # Divide
 div.s $f0, $f0, $f1 # Divides the value of $f0 by $f1 and stores it in $f0
+# Square Root
+sqrt.s $f0, $f0 # Stores the square root of $f0 in $f0
 
 # Compare
 c.eq.s $f0, $f1 # Compares the value of $f0 and $f1 and sets the flag if they are equal
@@ -83,6 +85,8 @@ sub.d $f0, $f0, $f2 # Subtracts the value of $f1 from $f0 and stores it in $f0
 mul.d $f0, $f0, $f2 # Multiplies the value of $f0 and $f1 and stores it in $f0
 # Divide
 div.d $f0, $f0, $f2 # Divides the value of $f0 by $f1 and stores it in $f0
+# Square Root
+sqrt.d $f0, $f0 # Stores the square root of $f0 in $f0
 
 # Compare
 c.eq.d $f0, $f2 # Compares the value of $f0 and $f1 and sets the flag if they are equal (use bc1t label for branch)

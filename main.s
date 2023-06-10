@@ -58,6 +58,7 @@ read_string:                #  Read string from input
     li $v0, 8               #  $a0 will be buffer address and $a1 the length (including the space made for \0) 
     syscall                 #  Remember that u can allocate space for a buffer in .data with .space (len)
     jr $ra
+#
 
 print_string:               #  Prints string given in $a0 
     li $v0, 4               #  Use "la $a0, label" to specify string address

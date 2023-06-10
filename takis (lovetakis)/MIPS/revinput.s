@@ -13,16 +13,41 @@
 .globl main
 
 main:
+    la $a0, buffer
     li $a1, 200
     jal read_string
+    jal print_string
+    jal rev_string
+    jal print_string
 
 
 
     j exit
+
 ## FUNCTIONS ## (Call with: jal function_name)
 
 rev_string:                 # This function reverses a string
-
+    move $t7, $a0           # String adress should be in $a0
+    move $t9, $a0
+    li $v0, 0
+    for_rev_string:         # Result will be still in $a0
+        lb $t0, ($a0)       # $v0 will have the length of the string 
+        addi $a0, $a0, 1    
+        addi $v0, $v0, 1
+    bnez $t0, for_rev_string
+    # $a0 now points to the end of the string
+    # $t7 points to the beginning of the string
+    addi $a0, $a0, -2 # $a0 now points to the last char of the string
+    for_rev_string2:
+        lb $t1, ($a0)       
+        lb $t2, ($t7)       
+        sb $t1, ($t7)       
+        sb $t2, ($a0)       
+        addi $a0, $a0, -1   
+        addi $t7, $t7, 1    
+    blt $t7, $a0, for_rev_string2 # if $t7 < $a0 then loop 
+    move $a0, $t9
+    jr $ra
 
 exit:                       # Exits the program 
     li $v0, 10
