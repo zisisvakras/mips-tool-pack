@@ -7,13 +7,22 @@
     Bye: .asciiz "\nEnd of Program...\n"
     wronginput: .asciiz "Wrong Input!"
     endl: .asciiz "\n"
+    buffer: .space 256
 
 .text
 .globl main
 
 main:
+    li $a1, 200
+    jal read_string
+
+
+
     j exit
 ## FUNCTIONS ## (Call with: jal function_name)
+
+rev_string:                 # This function reverses a string
+
 
 exit:                       # Exits the program 
     li $v0, 10

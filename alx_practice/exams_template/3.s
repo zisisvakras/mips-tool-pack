@@ -4,7 +4,9 @@
     ReadString: .asciiz "Insert a string :"
     equal: .asciiz " = "
     msg_is: .asciiz " is: "
-    Bye: .asciiz "\nEnd of Program...\n"
+    is_int: .asciiz "\nFOUND-INTEGER= "
+    not_int: .asciiz "\nNOT-INTEGER\n"
+    bye: .asciiz "\nEnd of Program...\n"
     wronginput: .asciiz "Wrong Input!"
     endl: .asciiz "\n"
 
@@ -12,10 +14,47 @@
 .globl main
 
 main:
+    li.s $f1, 0.0
+    li.s $f10, 0.00001
+    loop_main:
+        jal read_float
+        mov.s $f12, $f0
+        jal print_float
+
+        cvt.w.s $f4, $f0
+        cvt.s.w $f4, $f4
+
+        sub.s $f8, $f0, $f4
+
+        c.lt.s $f8, $f10
+        bc1t num_is_int 
+        j num_is_not_int
+
+        num_is_int:
+            la $a0, is_int
+            jal print_string
+            cvt.w.s $f4, $f4 
+            mfc1 $a0, $f4
+            jal print_int
+            jal print_endl
+            j continue_float
+
+        num_is_not_int:
+            la $a0, not_int
+            jal print_string
+
+        continue_float:
+
+    c.eq.s $f0, $f1
+    bc1f loop_main 
+
     j exit
 ## FUNCTIONS ## (Call with: jal function_name)
 
+
 exit:                       # Exits the program 
+    la $a0, bye
+    jal print_string
     li $v0, 10
     syscall
 #  

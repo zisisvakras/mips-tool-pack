@@ -48,18 +48,49 @@ sllv $t0, $t1, $t2 # $t0 = $t1 << $t2 # Shift left logical variable
 srlv $t0, $t1, $t2 # $t0 = $t1 >> $t2 # Shift right logical variable
 srav $t0, $t1, $t2 # $t0 = $t1 >> $t2 # Shift right arithmetic variable
 
-# Constants
+## CONSTANTS
+
 # max_int_32_signed = 2^31 - 1 = 2147483647 = 2.147483647e+9 (*10^9) (10 digits)
 # max_int_32_unsigned = 2^32 - 1 = 4294967295 = 4.294967295e+9 (*10^9) (10 digits)
 
 # max_int_16_signed = 2^15 - 1 = 32767 
 # max_int_16_unsigned = 2^16 - 1 = 65535
 
-# minimum_positive_single_precision_float = 2^-126 = 1.17549435e-38
-# maximum_single_precision_float = 2^128 * (2 - 2^-24) = 3.40282347e+38
-
-# minimum_positive_double_precision_float = 2^-1022 = 2.2250738585072014e-308
-# maximum_double_precision_float = 2^1024 * (2 - 2^-53) = 1.7976931348623157e+308
 
 
+## ASCII table
 
+# '0' = 48
+# ...
+# '9' = 57
+
+# 'A' = 65
+# ...
+# 'Z' = 90
+
+# 'a' = 97
+# ...
+# 'z' = 122
+
+# ' ' = 32
+# '\n' = 10
+# '\0' = 0
+
+## ASCII to INTeger
+
+# $t0 = $t1 - '0'
+# addi $t0, $t1, -48
+
+# REGISTERS
+
+# $zero = $0 = 0
+
+# $v0-$v1 = $2-$3 = values for results and expression evaluation
+# $a0-$a3 = $4-$7 = arguments
+
+# $t0-$t7 = $8-$15 = temporaries
+# $t8-$t9 = $24-$25 = temporaries
+# $s0-$s7 = $16-$23 = saved
+
+# $sp = $29 = stack pointer
+# $ra = $31 = return address
