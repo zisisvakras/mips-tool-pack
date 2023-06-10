@@ -16,7 +16,8 @@ main:
     sw $s0, 0($a0) # store value in $s0 into address $a0
 
 
-
+    li $v0, 10
+    syscall
 
 
 .data
