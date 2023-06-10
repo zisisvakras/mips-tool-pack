@@ -22,17 +22,57 @@
     NotEqualMessage: .asciiz "The strings are not equal"
     wronginput: .asciiz "Wrong Input!"
     endl: .asciiz "\n"
+    N: .word 3
+
 
 .text
 .globl main
 
 main:
+
+    la $t0, N
+    lw $a0, 0($t0)
+    
+    jal rec_fact
+
+    move $a0, $v0
+    jal print_int
+    jal print_endl
+
     j exit
 
 
 ###
 #  A collection of syscalls in mips-assembly
 ### 
+
+# int fact(int n){
+#    if(n < 1) return 1;
+#    return n*fact(n-1);
+# }
+
+
+rec_fact: # int n ($a0)
+    blt $a0, 2, return_1
+    # else
+    addi $sp, $sp, -4
+    sw $ra, 0($sp)
+
+    addi $a0, $a0, -1
+    jal rec_fact
+    addi $a0, $a0, 1
+
+    mul $v0, $v0, $a0
+
+
+    lw $ra, 0($sp)
+    addi $sp, $sp, 4
+    jr $ra
+
+    return_1:
+        li $v0, 1
+        jr $ra 
+
 
 #  Prints integer given in $a0
 print_int:
@@ -108,4 +148,14 @@ print_char:
 read_char:
     li $v0, 12
     syscall
+    jr $ra
+
+print_endl:
+    addi $sp, $sp, -4 
+    sw $a0, 0($sp)
+    li $a0, 10
+    li $v0, 11
+    syscall
+    lw $a0, 0($sp)
+    addi $sp, $sp, 4
     jr $ra

@@ -22,11 +22,34 @@
     NotEqualMessage: .asciiz "The strings are not equal"
     wronginput: .asciiz "Wrong Input!"
     endl: .asciiz "\n"
+    n: .word 20 
+    msg1: .asciiz "! is : "
 
 .text
 .globl main
 
 main:
+
+    la $a0, n
+    lw $t0, 0($a0)
+    
+    li $t2, 1 # i = 1..n
+    li $t1, 1 # $t1 contains i!
+
+    loop_fact:
+    mul $t1, $t1, $t2 # i! = i! * i
+
+    # print i
+    move $a0, $t2
+    jal print_int
+    la $a0, msg1
+    jal print_string
+    move $a0, $t1
+    jal print_int
+    jal print_endl
+
+    addi $t2, $t2, 1 # i++
+    ble $t2, $t0, loop_fact # if i <= n, repeat
     j exit
 
 
@@ -108,4 +131,14 @@ print_char:
 read_char:
     li $v0, 12
     syscall
+    jr $ra
+
+print_endl:
+    addi $sp, $sp, -4 
+    sw $a0, 0($sp)
+    li $a0, 10
+    li $v0, 11
+    syscall
+    lw $a0, 0($sp)
+    addi $sp, $sp, 4
     jr $ra

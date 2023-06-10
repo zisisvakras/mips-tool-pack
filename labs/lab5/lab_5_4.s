@@ -1,3 +1,6 @@
+# NOTE: This excercise is out of the scope of the course, but it is a good way to practice
+# I calculated for x = 1 => e^x = e^1 = e
+
 #  MESSAGES
 .data
     ReadInt: .asciiz "Insert an integer :"
@@ -27,12 +30,88 @@
 .globl main
 
 main:
+
+    # int k; ($s0)
+    # read k
+    jal read_int
+    move $s0, $v0
+
+    # print k
+    move $a0, $s0
+    jal print_int
+
+    beq $s0, $zero, exit # if k==0, exit
+
+    # for i($s1) in range [0, k-1] do
+    addi $s1, $zero, 0
+    for_every_k_loop:
+        # print i
+        # move $a0, $s1
+        # jal print_int
+        # jal print_endl
+
+        # int b ($s2) = fact(i)
+        move $a0, $s1 # copy i to $a0
+        jal factorial
+        move $s2, $v0 # copy i! to $s2
+
+        # print i! 
+        # move $a0, $s2
+        # jal print_int
+        # jal print_endl
+
+        # double cur ($f0/1) = 1 / b (k!) 
+        mtc1 $s2, $f2
+        cvt.d.w $f2, $f2
+
+
+        li.d $f4, 1.0
+        div.d $f0, $f4, $f2
+        # now $f0 has the current term
+
+        add.d $f12, $f12, $f0
+
+        mov.d $f8, $f12
+        mov.d $f12, $f0
+        # jal print_double
+        mov.d $f12, $f8
+
+    addi $s1, $s1, 1
+    bne $s1, $s0, for_every_k_loop # i!=k
+
+    # endl
+    jal print_endl
+    # print_d $f12
+    jal print_double
+
     j exit
 
 
 ###
 #  A collection of syscalls in mips-assembly
 ### 
+
+#  Returns $a0^$a1 in $v0
+
+#  Returns $a0! in $v0
+factorial:
+    addi $sp, $sp, -4    # make space in stack
+    sw $t0, 0($sp)
+    move $v0, $a0
+	move $t0, $a0
+    bne $v0, $zero, factorialloop
+    li $v0, 1            # case of 0!
+    j factorialexit
+    factorialloop:
+    addi $t0, $t0, -1
+    beq $t0, $zero, factorialexit
+    mult $v0, $t0
+    mflo $v0
+    j factorialloop
+    factorialexit:
+    lw $t0, 0($sp)
+    addi $sp, $sp, 4
+    jr $ra
 
 #  Prints integer given in $a0
 print_int:
@@ -108,4 +187,14 @@ print_char:
 read_char:
     li $v0, 12
     syscall
+    jr $ra
+
+print_endl:
+    addi $sp, $sp, -4 
+    sw $a0, 0($sp)
+    li $a0, 10
+    li $v0, 11
+    syscall
+    lw $a0, 0($sp)
+    addi $sp, $sp, 4
     jr $ra

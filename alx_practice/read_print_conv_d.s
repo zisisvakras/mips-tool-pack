@@ -3,30 +3,25 @@
     ReadInt: .asciiz "Insert an integer :"
     ReadFloating: .asciiz "Insert a float :"
     ReadDoubleNum: .asciiz "Insert a double :"
-    ReadStringCharacters: .asciiz "Insert a string :"
-    Result: .asciiz "The result is :"
-    Final: .asciiz "The final <type> is: "
-    Difference: .asciiz "The difference is :"
-    Quotient: .asciiz "The Quotient is :"
-    Remainder: .asciiz "The Remainder is :"
-    Factorial: .asciiz "The factorial of the number "
-    General_Start: .asciiz "The "
-    Power: .asciiz " th power of the number "
-    General_End: .asciiz " is: "
-    StringMessage: .asciiz "The final string is: "
-    Converted1: .asciiz "The converted float is: "
-    Converted2: .asciiz " from: "
-    ProgramEnd: .asciiz "\nEND OF PROGRAM\n"
-    ErrorMessages: .asciiz "The character is not a number\n"
-    EqualMessage: .asciiz "The strings are equal"
-    NotEqualMessage: .asciiz "The strings are not equal"
-    wronginput: .asciiz "Wrong Input!"
     endl: .asciiz "\n"
 
 .text
 .globl main
 
 main:
+
+    jal read_double
+
+    mov.d $f12, $f0
+
+    jal print_double
+    jal print_endl
+
+    cvt.w.d $f0, $f0 # Converts the value of $f0 into a word
+    mfc1 $t0, $f0 # Moves the value of $f0 into $t0 # NOTE: here destination is first
+
+    move $a0, $t0
+    jal print_int
     j exit
 
 
@@ -108,4 +103,14 @@ print_char:
 read_char:
     li $v0, 12
     syscall
+    jr $ra
+
+print_endl:
+    addi $sp, $sp, -4 
+    sw $a0, 0($sp)
+    li $a0, 10
+    li $v0, 11
+    syscall
+    lw $a0, 0($sp)
+    addi $sp, $sp, 4
     jr $ra

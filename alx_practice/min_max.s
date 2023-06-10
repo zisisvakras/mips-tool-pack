@@ -22,17 +22,120 @@
     NotEqualMessage: .asciiz "The strings are not equal"
     wronginput: .asciiz "Wrong Input!"
     endl: .asciiz "\n"
+    msg_min: .asciiz "Min number is: "
+    msg_max: .asciiz "Max number is: "
+    a0: .word 23
+    a1: .word 12
+    a2: .word -420
+    a3: .word 69
 
 .text
 .globl main
 
 main:
+
+    li $s0, -666
+    li $s1, -665
+    li $s2, -664
+    li $s3, -663
+    li $s4, -662
+    li $s5, -661
+
+    la $t0, a0
+    lw $a0, 0($t0)
+
+    la $t0, a1
+    lw $a1, 0($t0)
+
+    la $t0, a2
+    lw $a2, 0($t0)
+    
+    la $t0, a3
+    lw $a3, 0($t0)
+
+    jal min_max
+    move $s6, $v0
+    move $s7, $v1
+    
+    la $a0, msg_min
+    jal print_string
+
+    move $a0, $s6
+    jal print_int
+    jal print_endl
+
+    la $a0, msg_max
+    jal print_string
+
+    move $a0, $s7
+    jal print_int
+    jal print_endl
+
+
+
     j exit
 
 
 ###
 #  A collection of syscalls in mips-assembly
 ### 
+
+#$a0-3
+min_max:
+    addi $sp, $sp, -16    
+    sw $s0, 0($sp)
+    sw $s1, 4($sp)
+    sw $s2, 8($sp)
+    sw $s3, 12($sp)
+
+    # int min_1 ($s0)
+    # int max_1 ($s1)
+    blt $a0, $a1, min_a0 # $a0 < $a1
+        move $s1, $a0
+        move $s0, $a1
+        j end_if_0
+
+    min_a0:
+        move $s0, $a0
+        move $s1, $a1
+
+    end_if_0:
+
+    # int min2 ($s2)
+    # int max_2 ($s3)
+
+    blt $a2, $a3, min_a2 # $a2 < $a3
+        move $s2, $a3
+        move $s3, $a2
+        j end_if_1
+    min_a2:
+        move $s2, $a2
+        move $s3, $a3
+
+    end_if_1:
+
+    blt $s0, $s2, min_s0 # $s0 < $s2
+        move $v0, $s2
+        j end_if_2
+    min_s0:
+        move $v0, $s0
+    end_if_2:
+
+
+    blt $s1, $s3, max_s3 # $s1 < $s3
+        move $v1, $s1
+        j end_if_3
+    max_s3:
+        move $v1, $s3
+    end_if_3:
+
+    lw $s0, 0($sp)
+    lw $s1, 4($sp)
+    lw $s2, 8($sp)
+    lw $s3, 12($sp)
+    addi $sp, $sp, 16
+jr $ra
+
 
 #  Prints integer given in $a0
 print_int:
@@ -108,4 +211,14 @@ print_char:
 read_char:
     li $v0, 12
     syscall
+    jr $ra
+
+print_endl:
+    addi $sp, $sp, -4 
+    sw $a0, 0($sp)
+    li $a0, 10
+    li $v0, 11
+    syscall
+    lw $a0, 0($sp)
+    addi $sp, $sp, 4
     jr $ra
