@@ -1,4 +1,5 @@
 # Factorial with floats
+
 .data
     fac:  .asciiz "! = "
     endl: .asciiz "\n"

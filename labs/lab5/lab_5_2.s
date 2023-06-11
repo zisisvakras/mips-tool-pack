@@ -7,7 +7,6 @@
     plus:  .word 0x7F800000  # 0 11111111 00000000...
     minus: .word 0xFF800000  # 1 11111111 00000000...
     NaN:   .word 0x7FFFFFFF  # 0 11111111 11111111...
-    endl:  .asciiz "\n"
 
 .text
 .globl main
@@ -66,9 +65,9 @@ exit:
     li $v0, 10
     syscall
 
-#  Prints endl and changes $v0, $a0
+#  Prints new line, overwrites $a0
 print_endl:
-    la $a0, endl
-    li $v0, 4
+    li $a0, 10
+    li $v0, 11
     syscall
     jr $ra
