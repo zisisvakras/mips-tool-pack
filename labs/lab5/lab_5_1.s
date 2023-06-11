@@ -1,33 +1,30 @@
-#            Read and Print Float               
+# Float syscalls
 
 .text
-.globl     __start	
-											
-__start:
+.globl main
 
-	read_float:
-		li	$v0, 6	# read float which is stored in $f0
-		syscall
-
-		mov.s $f12, $f0		# move the value of $f0, in which the given float number is stored
-							# to $f12, which stores the float that is printed with the prin float syscall
-
-		li	$v0, 2
-		syscall
-
-	print_endl2:	
-		li	$a0, 10			# char of newline		
-		li	$v0, 11 		# system call to print
-		syscall
+main:
+    jal read_float
+    mov.s $f12, $f0
+    jal print_float
+    j exit
 
 
+#  Prints float given in $f12
+#  Use "mov.s $f12, $???" to move float to reg
+print_float:
+    li $v0, 2
+    syscall
+    jr $ra
 
-	Exit:	
-		li 	$v0, 10	
-		syscall				#au revoir...
+#  Read float from input
+#  Float will be in $f0
+read_float:
+    li $v0, 6
+    syscall
+    jr $ra
 
-
-.data
-endl: 					.asciiz 	"\n"
-
-
+# Exits the program
+exit:
+    li $v0, 10
+    syscall
