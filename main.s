@@ -21,7 +21,6 @@
     EqualMessage: .asciiz "The strings are equal"
     NotEqualMessage: .asciiz "The strings are not equal"
     wronginput: .asciiz "Wrong Input!"
-    endl: .asciiz "\n"
 
 .text
 .globl main
@@ -107,5 +106,12 @@ print_char:
 #  Char will be in $v0
 read_char:
     li $v0, 12
+    syscall
+    jr $ra
+
+#  Prints new line, overwrites $a0
+print_endl:
+    li $a0, 10
+    li $v0, 11
     syscall
     jr $ra
