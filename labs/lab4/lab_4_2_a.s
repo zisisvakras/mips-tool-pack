@@ -33,11 +33,12 @@ __start:
 # end of main program
 # start of procedure
 #
-    proc:
-        beq $a0, $zero, next    # if the value of the $a0, which represent
-                                # the given number of the procedure is equual to 0 the procedure stops
+    proc: # Arguement: $a0 - integer number
         li $v0, 1
         syscall
+
+        ble $a0, $zero, next    # if $a0 <= 0, stop the procedure
+                                # note: < is for case of $a0 being negative
 
         addi $sp, $sp, -4       # store the value of $a0 in stack
         sw $a0, 0($sp)
@@ -55,5 +56,5 @@ __start:
 # end of procedure
 
 .data
-prompt: .asciiz "Enter integer number :"
+prompt: .asciiz "Enter integer number:\n"
 endl: .asciiz "\n"
