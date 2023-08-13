@@ -1,3 +1,12 @@
+#  C counterpart:
+#
+#  int strlen(const char *s) {
+#      char *sc;
+#      for (sc = s; *sc != '\0'; ++sc);
+#      return sc - s;
+#  }
+
+
 #  Calculate the length of string in $a0
 #  Returns length in $v0 (without \0)
 strlen:
