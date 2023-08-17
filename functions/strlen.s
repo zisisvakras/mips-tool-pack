@@ -1,7 +1,7 @@
 #  C counterpart:
 #
 #  int strlen(const char *s) {
-#      char *sc;
+#      const char *sc;
 #      for (sc = s; *sc != '\0'; ++sc);
 #      return sc - s;
 #  }
