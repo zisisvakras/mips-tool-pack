@@ -1,8 +1,7 @@
-# possible exam problem
 # calculates Τaylor series: x^n/n!
 # of the function: e^x
 
-#  MESSAGES
+# MESSAGES
 .data
     ReadFloating: .asciiz "Insert a float :"
 
