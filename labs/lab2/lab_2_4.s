@@ -13,6 +13,7 @@ main:
     xor  $t1, $s2, $s1 # w1 ^ sum
     # calculate ovf in $t0
     and  $t0, $t1, $t0
+    srl  $t0, $t0, 31
     # exit
     li   $v0, 10
     syscall
