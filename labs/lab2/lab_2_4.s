@@ -1,8 +1,8 @@
 .data
-	w0:	.word 0xf2345678
-	w1:	.word 0xff654321
+    w0:	.word 0xf2345678
+    w1:	.word 0xff654321
 .text
-	.globl main
+    .globl main
 
 main:
     # load
