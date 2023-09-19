@@ -1,9 +1,9 @@
-# Read Integer and Print Integer       
+# Read Integer and Print Integer
 
 .text
 .globl __start
 
-__start: 
+__start:
 
     li $v0, 5       # read integer
     syscall
@@ -12,9 +12,6 @@ __start:
                     # it in $a0, so we can print it
 
     li $v0, 1       # print integer
-    syscall 
-
-
-
+    syscall
     li $v0, 10      # exit
     syscall

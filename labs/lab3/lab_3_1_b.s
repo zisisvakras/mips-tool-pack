@@ -5,7 +5,7 @@
 .text
 .globl __start
 
-__start: 
+__start:
 
     li $v0, 5            # read int
     syscall
@@ -47,7 +47,7 @@ u2:
     syscall
     j exit               # break
 
-u3:    
+u3:
     bne $t5, $zero, exit # if the counter isn't 0 it jumps to exit, else it prints the string in "none" label.
     la $a0, none
     li $v0, 4
@@ -56,7 +56,7 @@ u3:
 exit:
     li $v0, 10
     syscall
-    
+
 .data
 
 even:  .asciiz "The number is divided by 2.\n"

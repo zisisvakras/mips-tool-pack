@@ -1,6 +1,6 @@
 # possible exam problem
-# calculates Τaylor series: x^n/n! 
-# of the function: e^x 
+# calculates Τaylor series: x^n/n!
+# of the function: e^x
 
 #  MESSAGES
 .data
@@ -10,7 +10,7 @@
 .globl main
 
 #f0,12 x
-#f1 end 
+#f1 end
 #f2 counter
 #f3 result
 #f4 x power
@@ -52,14 +52,14 @@ loop:
     c.eq.s $f1, $f2
     bc1f loop
 done:
-    add.s $f12, $f3, $f7 
+    add.s $f12, $f3, $f7
     jal print_float
     j exit
 
 
 ###
 #  A collection of syscalls in mips-assembly
-### 
+###
 
 #  Prints float given in $f12
 #  Use "mov.s $f12, $???" to move float to reg

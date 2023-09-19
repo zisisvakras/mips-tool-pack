@@ -4,7 +4,7 @@
 .text
     .globl main
 
-main:   
+main:
     # load
     lw   $s0, w0
     lw   $s1, w1
