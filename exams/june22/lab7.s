@@ -76,39 +76,10 @@ read_float:
     syscall
     jr $ra
 
-#  Read double from input
-#  Double will be in $f0 (and $f1)
-#  Remember that double uses 2 registers (pair of even-odd)
-read_double:
-    li $v0, 7
-    syscall
-    jr $ra
-
-#  Read string from input
-#  $a0 will be buffer address and $a1 the length (including the space made for \0)
-#  Remember that u can allocate space for a buffer in .data with .space (len)
-read_string:
-    li $v0, 8
-    syscall
-    jr $ra
-
 # Exits the program
 exit:
     li $v0, 10
     syscall
-
-#  Prints char given in $a0
-print_char:
-    li $v0, 11
-    syscall
-    jr $ra
-
-#  Read char from input
-#  Char will be in $v0
-read_char:
-    li $v0, 12
-    syscall
-    jr $ra
 
 #  Prints new line, overwrites $a0
 print_endl:
