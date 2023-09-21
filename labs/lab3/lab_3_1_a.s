@@ -1,9 +1,9 @@
-# Switch Case without Break 
+# Switch Case without Break
 
 .text
 .globl __start
 
-__start: 
+__start:
 
     li $v0, 5             # read int
     syscall
@@ -17,7 +17,7 @@ __start:
     mfhi $t1              # the remainder part of the division is stored in $t1 from the hi register
     bne $t1, $zero, u1    # if number mod 2 isn't 0 it jumps to exit, else it prints the string in "two" label
     addi $t5, $t5, 1      # we increase the counter
-    la $a0, even          # print message for perfect division with 2 
+    la $a0, even          # print message for perfect division with 2
     li $v0, 4
     syscall
 
@@ -42,16 +42,16 @@ u2:
     li $v0, 4
     syscall
 
-u3:    
+u3:
     bne $t5, $zero, exit  # if the counter isn't 0 it jumps to exit, else it prints the string in "none" label.
-    la $a0, none          # print message for perfect division with none           
+    la $a0, none          # print message for perfect division with none
     li $v0, 4
     syscall
-    
+
 exit:
     li $v0, 10
     syscall
-    
+
 .data
 
 even:  .asciiz "The number is divided by 2.\n"
