@@ -1,0 +1,8 @@
+exams/sept23/*.log
+exams/sept23/*.fls
+exams/sept23/*.aux
+exams/sept23/*.txt
+exams/sept23/*.png
+exams/sept23/*.fdb_latexmk
+exams/sept23/*.synctex*
+quiz/2024/test.c
