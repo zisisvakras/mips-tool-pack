@@ -15,8 +15,12 @@ li $a1, 21	# specify length to read
 la $a0, buffer	# store read string in buffer
 syscall		
 
-la $a0, newl	# print new line
+la $a0, buffer	# not needed, a0 already holds the address of buffer
 li $v0, 4	# print string
+syscall
+
+la $a0, newl	# print new line
+li $v0, 4	# print string, not necessary, v0 is already 4
 syscall
 
 sb $zero, buffer + 5	# add null byte after 5th char
