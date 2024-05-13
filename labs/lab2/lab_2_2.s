@@ -1,44 +1,34 @@
-# Little Endian to Big Endian
+# Little Endian to Big Endian (on a word)
+# Better solution than xergias
 
-.text
-.globl __start
-
-__start:
-
-    lw $t5, w1          # load the word (4 bytes) from address of label "w1", in $t5
-
-    # Least Significant Byte in place of Most Significant Byte
-    sll $t0, $t5, 24    # shift left logical by 24 bits in the value that is stored in $t5,
-                        #  so the 24 Most Significant Bits are lost
-
-    # Most Significant Byte in place of Least Significant Byte
-    srl $t1, $t5, 24    # shift right logical by 24 bits in the value that is stored in $t5,
-                        # so the 24 Least Significant Bits are lost
-
-    # Second Most Significant Byte to Second Least Significant Byte
-    sll $t2, $t5, 8     # shift left logical the value of $t5 by 8 bits, so the
-                        # 8 Most Significant Bits are lost
-    srl $t2, $t2, 24    # shift right logical the value of $t2, which has the value
-                        # of $t5 after the sll, so the 24 Least Significant Bits are lost
-    sll $t2, $t2, 8     # shift left logical the value of $t2 by 8 bits, so the Second Most
-                        # Significant Byte gets in the place of the Second Least Significant Byte
-
-    # Second Least Significant Byte to Second Most Significant Byte
-    sll $t3, $t5, 16    # shift left logical the value of $t5 by 16 bits, so the 16
-                        # Most Significant Bits are lost
-    srl $t3, $t3, 24    # shift right logical so the 24 Least Significant Bits are lost
-    sll $t3, $t3, 16    # shift left logical so the Second Least Significant Byte is in the place
-                        # of the Second Most Significant Byte
-
-    or $t4, $t0, $t1    # or between $t0 and $t1, so we make the new MSB and LSB
-    or $t6, $t2, $t3    # or between $t2 and $t3, so we make the 2 middle Bytes
-
-    or $t7, $t4, $t6    # or $t3 and $t6 to "build" the new reversed word
-
-
-    li $v0, 10          # exit
-    syscall
+# Result is stored in s1
+# bytes (in comments) are numbered according to exercise
 
 .data
+    w1: .word 0x12345678
 
-w1: .word 0x12345678
+.text
+    .globl main
+
+main:
+    # load word from memory
+    lw $s0, w1
+
+    # Obtain bytes 1, 2 (b1, b2) by masking
+    srl $s1, $s0, 8         # shift b1 to new position
+    andi $s1, $s1, 0xff00   # mask to obtain b1
+    andi $t0, $s0, 0xff00   # mask to obtain b2
+    sll $t0, $t0, 8         # shift b2 to new position
+    or $s1, $s1, $t0        # or b2 to new position
+
+    # Obtain most and least significant bytes
+    srl $t0, $s0, 24        # only byte 0 remains, rest is 0
+    sll $t1, $s0, 24        # only byte 3 remains, rest is 0
+
+    # Assemble new word
+    or $s1, $s1, $t0
+    or $s1, $s1, $t1
+
+    # exit
+    li $v0, 10
+    syscall
