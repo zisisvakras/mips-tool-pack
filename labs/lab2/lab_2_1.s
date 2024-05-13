@@ -1,7 +1,7 @@
-# transform 32bit value into its code gray value
+# encode a 32bit number using Grey encoding
 
-# insert value at s0 before running the program
-# answer is stored at s1
+# insert value at s0, manually from qtspim window, before running the program
+# result is stored at s1
 
 .text
 
