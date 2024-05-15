@@ -6,8 +6,8 @@
 
 main:
     # load
-    lw   $s0, w0
-    lw   $s1, w1
+    lw   $t0, w0
+    lw   $t1, w1
 
     addu $s0, $t1, $t2
     xor $s1, $s0, $t1
