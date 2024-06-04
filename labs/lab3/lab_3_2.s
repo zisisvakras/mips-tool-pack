@@ -1,3 +1,5 @@
+# calculate hamming distance of 2 words
+
 .data
     w1: .word 0x0
     w2: .word 0xffffffff
