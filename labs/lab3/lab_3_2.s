@@ -13,18 +13,12 @@ __start:
     li $t0, 32  # countdown for how many bits weve checked
     li $t1, 0   # hamming distance counter
     
-loop:
     xor $t2, $s0, $s1
-    andi $t2, 1     # mask to keep only least significant bit
-    
-    beq $t2, $zero, prepare_for_next_iteration    # if same bit continue loop
-    addi $t1, 1     # if diffrent bit, increment counter    
-
-prepare_for_next_iteration:
-    srl $s0, $s0, 1
-    srl $s1, $s1, 1
-    addi $t0, $t0, -1
-    bne $t0, $zero, loop     # while countdown isnt 0 loop
+loop:
+    andi $t3, $t2, 1    
+    add $t1, $t1, $t3
+    srl $t2, $t2, 1
+    bne $t2, $zero, loop     # while countdown isnt 0 loop
 end_of_loop:
     
 # print hamming distance
