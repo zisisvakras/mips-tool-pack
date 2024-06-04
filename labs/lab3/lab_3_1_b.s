@@ -1,65 +1,66 @@
-# Switch Case with Break
-# The exact same program with lab5_3.1.a.s but with breaks in the end of every case
-# so only the first divisor if there is one, is printed
+# Switch case with break
+# again... this isnt really a switch case, more like if else statements...
 
+.data 
+    divisible_by_2:  .asciiz "\nDivisible by 2"
+    divisible_by_5:  .asciiz "\nDivisible by 5"
+    divisible_by_10: .asciiz "\nDivisible by 10"
+    not_divisible:   .asciiz "\nNumber not divisible by 2, 5, nor 10" 
+      
 .text
-.globl __start
-
+    .globl __start
+    
 __start:
+    
+    li $v0, 5      
+    syscall     # read int
 
-    li $v0, 5            # read int
+    move $s0, $v0   # save int in s0
+    
+    li $v0, 1
+    move $a0, $s0
+    syscall         # print int
+    
+div_by_2:
+    rem $t0, $s0, 2
+    bne $t0, $zero, div_by_5    # if not divisible by 2, check 5
+    
+    li $v0, 4   # print string
+    la $a0, divisible_by_2
     syscall
-
-    move $t2, $v0
-    addi $t5, $zero, 0
-
-    addi $t0, $zero, 2
-    div $t2, $t0
-
-    mfhi $t1
-    bne $t1, $zero, u1   # if number mod 2 isn't 0 it jumps to exit, else it prints the string in "two" label
-    addi $t5, $t5, 1
-    la $a0, even
-    li $v0, 4
+    
+    la $t1, exit    # "break", go to the end
+    jr $t1
+    
+div_by_5:
+    rem $t0, $s0, 5
+    bne $t0, $zero, div_by_10    # if not divisible by 5, check 10
+        
+    li $v0, 4   # print string
+    la $a0, divisible_by_5
     syscall
-    j exit               # break
-
-u1:
-    addi $t0, $zero, 3
-    div $t2, $t0
-
-    mfhi $t1
-    bne $t1, $zero, u2   # if number mod 3 isn't 0 it jumps to u2, else it prints the string in "three" label
-    addi $t5, $t5, 1
-    la $a0, three
-    li $v0, 4
+    
+    la $t1, exit    # "break", go to the end
+    jr $t1
+    
+div_by_10:
+    rem $t0, $s0, 10
+    bne $t0, $zero, not_div    # if not divisible by 10, go to not_div
+      
+    li $v0, 4   # print string
+    la $a0, divisible_by_10
     syscall
-    j exit               # break
-
-u2:
-    addi $t0, $zero, 5
-    div $t2, $t0
-    mfhi $t1
-    bne $t1, $zero, u3   # if number mod 5 isn't 0 it jumps to exit, else it prints the string in "five" label
-    addi $t5, $t5, 1
-    la $a0, five
-    li $v0, 4
+ 
+    la $t1, exit    # "break", go to the end
+    jr $t1
+    
+ not_div:
+    bne $t1, $zero, exit    # if counter is 0 go to exit
+    
+    li $v0, 4   # print string
+    la $a0, not_divisible
     syscall
-    j exit               # break
-
-u3:
-    bne $t5, $zero, exit # if the counter isn't 0 it jumps to exit, else it prints the string in "none" label.
-    la $a0, none
-    li $v0, 4
-    syscall
-
-exit:
+ 
+ exit:   
     li $v0, 10
     syscall
-
-.data
-
-even:  .asciiz "The number is divided by 2.\n"
-three: .asciiz "The number is divided by 3.\n"
-five:  .asciiz "The number is divided by 5.\n"
-none:  .asciiz "The number is divided by none.\n"
