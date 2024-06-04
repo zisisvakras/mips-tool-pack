@@ -1,60 +1,65 @@
-# Switch Case without Break
+# Switch case without break
+# not really how a switch case works but thats how its described...
 
+.data 
+    divisible_by_2:  .asciiz "\nDivisible by 2"
+    divisible_by_5:  .asciiz "\nDivisible by 5"
+    divisible_by_10: .asciiz "\nDivisible by 10"
+    not_divisible:   .asciiz "\nNumber not divisible by 2, 5, nor 10" 
+      
 .text
-.globl __start
-
+    .globl __start
+    
 __start:
+    
+    li $v0, 5      
+    syscall     # read int
 
-    li $v0, 5             # read int
+    move $s0, $v0   # save int in s0
+    
+    li $v0, 1
+    move $a0, $s0
+    syscall         # print int
+    
+    li $t1, 0       # counter, will be incremented if number is divisble, otherwise will stay 0
+    
+div_by_2:
+    rem $t0, $s0, 2
+    bne $t0, $zero, div_by_5    # if not divisible by 2, check 5
+    
+    addi $t1, $t1, 1    # number is divisible, increment counter
+    
+    li $v0, 4   # print string
+    la $a0, divisible_by_2
     syscall
-
-    move $t2, $v0         # we move the read integer in $t2
-    addi $t5, $zero, 0    # we initialize a counter for the case that the integer is divided by neither 2,3,5
-
-    addi $t0, $zero, 2    # we load 2 in $t0
-    div $t2, $t0          # division between the given integer and 2
-
-    mfhi $t1              # the remainder part of the division is stored in $t1 from the hi register
-    bne $t1, $zero, u1    # if number mod 2 isn't 0 it jumps to exit, else it prints the string in "two" label
-    addi $t5, $t5, 1      # we increase the counter
-    la $a0, even          # print message for perfect division with 2
-    li $v0, 4
+    
+div_by_5:
+    rem $t0, $s0, 5
+    bne $t0, $zero, div_by_10    # if not divisible by 5, check 10
+    
+    addi $t1, $t1, 1    # number is divisible, increment counter
+        
+    li $v0, 4   # print string
+    la $a0, divisible_by_5
     syscall
+    
+div_by_10:
+    rem $t0, $s0, 10
+    bne $t0, $zero, end    # if not divisible by 10, go to end
 
-u1:
-    addi $t0, $zero, 3    # the same we did with 2 but for 3
-    div $t2, $t0
-
-    mfhi $t1
-    bne $t1, $zero, u2    # if number mod 3 isn't 0 it jumps to u2, else it prints the string in "three" label
-    addi $t5, $t5, 1
-    la $a0, three         # print message for perfect division with 3
-    li $v0, 4
+    addi $t1, $t1, 1    # number is divisible, increment counter
+        
+    li $v0, 4   # print string
+    la $a0, divisible_by_10
     syscall
-
-u2:
-    addi $t0, $zero, 5    # the same for 5
-    div $t2, $t0
-    mfhi $t1
-    bne $t1, $zero, u3    # if number mod 5 isn't 0 it jumps to exit, else it prints the string in "five" label
-    addi $t5, $t5, 1
-    la $a0, five          # print message for perfect division with 5
-    li $v0, 4
+ 
+ end:
+    bne $t1, $zero, exit    # if counter is 0 go to exit
+    
+    li $v0, 4   # print string
+    la $a0, not_divisible
     syscall
-
-u3:
-    bne $t5, $zero, exit  # if the counter isn't 0 it jumps to exit, else it prints the string in "none" label.
-    la $a0, none          # print message for perfect division with none
-    li $v0, 4
-    syscall
-
-exit:
+ 
+ exit:   
     li $v0, 10
     syscall
-
-.data
-
-even:  .asciiz "The number is divided by 2.\n"
-three: .asciiz "The number is divided by 3.\n"
-five:  .asciiz "The number is divided by 5.\n"
-none:  .asciiz "The number is divided by none.\n"
