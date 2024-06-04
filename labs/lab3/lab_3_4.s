@@ -6,8 +6,8 @@
 
 main:
     # Prepare range
-    addi $t0, $zero, 97
-    addi $t1, $zero, 122
+    addi $t0, $zero, 'a'
+    addi $t1, $zero, 'z'
     # Get string
     la $a0, buf
     li $a1, 11
