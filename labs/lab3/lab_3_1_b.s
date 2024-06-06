@@ -15,9 +15,9 @@
 
 .data 
     divisible_by_2:  .asciiz "\nDivisible by 2"
-    divisible_by_5:  .asciiz "\nDivisible by 5"
-    divisible_by_10: .asciiz "\nDivisible by 10"
-    not_divisible:   .asciiz "\nNumber not divisible by 2, 5, nor 10" 
+    divisible_by_3:  .asciiz "\nDivisible by 3"
+    divisible_by_5: .asciiz "\nDivisible by 5"
+    not_divisible:   .asciiz "\nNumber not divisible by 2, 3, nor 5" 
       
 .text
     .globl __start
@@ -35,7 +35,7 @@ __start:
     
 div_by_2:
     rem $t0, $s0, 2
-    bne $t0, $zero, div_by_5    # if not divisible by 2, check 5
+    bne $t0, $zero, div_by_3    # if not divisible by 2, check 3
     
     li $v0, 4   # print string
     la $a0, divisible_by_2
@@ -44,23 +44,23 @@ div_by_2:
     la $t1, exit    # "break", go to the end
     jr $t1
     
-div_by_5:
-    rem $t0, $s0, 5
-    bne $t0, $zero, div_by_10    # if not divisible by 5, check 10
+div_by_3:
+    rem $t0, $s0, 3
+    bne $t0, $zero, div_by_5    # if not divisible by 3, check 5
         
     li $v0, 4   # print string
-    la $a0, divisible_by_5
+    la $a0, divisible_by_3
     syscall
     
     la $t1, exit    # "break", go to the end
     jr $t1
     
-div_by_10:
-    rem $t0, $s0, 10
-    bne $t0, $zero, not_div    # if not divisible by 10, go to not_div
+div_by_5:
+    rem $t0, $s0, 5
+    bne $t0, $zero, not_div    # if not divisible by 5, go to not_div
       
     li $v0, 4   # print string
-    la $a0, divisible_by_10
+    la $a0, divisible_by_5
     syscall
  
     la $t1, exit    # "break", go to the end
