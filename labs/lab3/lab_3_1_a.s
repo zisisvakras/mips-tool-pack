@@ -13,8 +13,8 @@
 
 .data 
     divisible_by_2:  .asciiz "\nDivisible by 2"
-    divisible_by_5:  .asciiz "\nDivisible by 3"
-    divisible_by_10: .asciiz "\nDivisible by 5"
+    divisible_by_3:  .asciiz "\nDivisible by 3"
+    divisible_by_5: .asciiz "\nDivisible by 5"
     not_divisible:   .asciiz "\nNumber not divisible by 2, 3, nor 5" 
       
 .text
@@ -50,7 +50,7 @@ div_by_3:
     addi $t1, $t1, 1    # number is divisible, increment counter
         
     li $v0, 4   # print string
-    la $a0, divisible_by_5
+    la $a0, divisible_by_3
     syscall
     
 div_by_5:
