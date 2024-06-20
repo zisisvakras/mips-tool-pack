@@ -1,8 +1,8 @@
 # calculate hamming distance of 2 words
 
 .data
-    w1: .word 0xc
-    w2: .word 0x3
+    w1: .word 0x0
+    w2: .word 0xffffffff
 
 .text
     .globl __start
@@ -19,7 +19,7 @@ loop:
     andi $t3, $t2, 1    
     add $t1, $t1, $t3
     srl $t2, $t2, 1
-    bnez $t2, loop     # while $t2 not equal to zero, loop
+    bne $t2, $zero, loop     # while countdown isnt 0 loop
 end_of_loop:
     
     # print hamming distance
