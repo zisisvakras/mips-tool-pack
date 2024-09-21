@@ -38,7 +38,7 @@ Main_Loop:
 		la $a0, float_prompt	
         jal print_string
 		
-		jal print_endl1
+		jal print_endl
 		
         # result in $f0
         jal read_float
@@ -51,7 +51,7 @@ Main_Loop:
 		
 		l.s $f8, zero_float		# checks if f12 is 0
 		c.eq.s $f12, $f8 		# true: print end of program
-		bc1t End				# false: continue
+		bc1t Exit				# false: continue
 
 ########################################################
 
