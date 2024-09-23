@@ -49,6 +49,10 @@ check_pow2_or_inf:
 					sll $t1, $t0, 9
 					srl $t1, $t1, 9
 					bnez $t1, return
+     					sll $t1, $t0, 1
+					srl $t1, $t1, 24
+					addi $t1, $t1, -127
+					bltz $t1, return
 					la $a0, string3
 					li $v0, 4
 					syscall
