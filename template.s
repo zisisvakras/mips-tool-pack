@@ -166,10 +166,10 @@ pow:
     sw $t0, 0($sp)
     move $v0, $a0
 	move $t0, $a1
-    bne $v0, $zero, next
+    bne $v0, $zero, pownext
     li $v0, 0            # 0^a
     j powexit
-    next:
+    pownext:
     bne $t0, $zero, powloop
     li $v0, 1            # a^0
     j powexit
