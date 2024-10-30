@@ -7,7 +7,7 @@ pow:
     bne $v0, $zero, next
     li $v0, 0            # 0^a
     j powexit
-    next:
+    pownext:
     bne $t0, $zero, powloop
     li $v0, 1            # a^0
     j powexit
