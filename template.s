@@ -1,30 +1,32 @@
+# Calculate the number of digits in a number
 # a0: n
 # -> a0: digit count
 # overwrites t0, t1, a0
-digit_count:
+digc:
     li t0, 0
     li t1, 10
-  digit_count_loop:
+  digc1:
     div a0, a0, t1
     addi t0, t0, 1
-    bne a0, zero, digit_count_loop
+    bnez a0, digc1
     mv a0, t0
     jr ra
 
+# Calculate the factorial of a number
 # a0: n
 # -> a0: n!
 # overwrites t0, a0
-factorial:
+fac:
     mv t0, a0
-    bne a0, zero, factorialloop
+    bnez a0, fac1
     li a0, 1
-    j factorialexit
-    factorialloop:
+    j fac2
+    fac1:
     addi t0, t0, -1
-    beq t0, zero, factorialexit
+    beqz t0, fac2
     mul a0, t0, a0
-    j factorialloop
-    factorialexit:
+    j fac1
+    fac2:
     jr ra
 
 # a0: base
@@ -34,19 +36,19 @@ factorial:
 pow:
     mv t0, a0
     mv t1, a1
-    bne a0, zero, pownext
+    bnez a0, pow1
     li a0, 0            # 0^a
-    j powexit
-    pownext:
-    bne a1, zero, powloop
+    j pow3
+    pow1:
+    bnez a1, pow2
     li a0, 1            # a^0
-    j powexit
-    powloop:
+    j pow3
+    pow2:
     addi t1, t1, -1
-    beq t1, zero, powexit
+    beqz t1, pow3
     mul a0, a0, t1
-    j powloop
-    powexit:
+    j pow2
+    pow3:
     jr ra
 
 # a0: str1
@@ -56,17 +58,17 @@ pow:
 streq:
     lbu t0, 0(a0)
     lbu t1, 0(a1)
-    bne t0, t1, streqexitno
-    beq t0, zero, streqexityes
+    bne t0, t1, streq1
+    beqz t0, streq2
     addi a0, a0, 1
     addi a1, a1, 1
     j streq
-    streqexitno:
+    streq1:
     li a0, 0
-    j streqexit
-    streqexityes:
+    j streq3
+    streq2:
     li a0, 1
-    streqexit:
+    streq3:
     jr ra
 
 # a0: str
@@ -74,43 +76,44 @@ streq:
 # overwrites: t0, t1, a0
 strlen:
     addi t1, a0, -1
-strlenloop:
+strlen1:
     lb t0, 1(t1)
     addi t1, t1, 1
-    bne t0, zero, strlenloop
+    bnez t0, strlen1
     sub a0, t1, a0    # prepare return value
     jr ra
 
 # print an number in a given base
-# a0: base 
+# a0: base (2..16)
 # a1: the number to print
 # -> a0: the number of chars printed
-print_num:
-    addi sp, sp, -36  # 33byte string + alignment
-    addi t2, sp, 35   # initialize end
-    sb zero, 0(t2)    # null terminate the string
-print_num_loop:
-    addi t2, t2, -1   # fill string in reverse
+printnum:
+    addi sp, sp, -36
+    addi t2, sp, 35
+    sb zero, 0(t2)
+printnum2:
+    addi t2, t2, -1
     divu t0, a1, a0
     remu a1, a1, a0
-    addi t0, t0, 48   # add '0' to get the ascii
-    slti t1, t0, 58   # if result is past 9
-    bne t1, zero, print_num_num
-    addi t0, t0, 7    # add an other 7 to get to 'A'
-print_num_num:
-    sb t0, 0(t2)      # store the character in the string
-    bne a1, zero, print_num_loop
-    li a7, 4          # print string
+    addi t0, t0, 48
+    slti t1, t0, 58
+    bnez t1, printnum3
+    addi t0, t0, 7
+printnum3:
+    sb t0, 0(t2)
+    bnez a1, printnum2
+    li a7, 4
     mv a0, t2
     ecall
     addi sp, sp, 36
     sub a0, sp, a0
     jr ra
 
-# repeateadly reads characters, converts it to desired base and puts result in $v0
-# $a0: number base (2..16)
-# $v0: output, $v1: failed flag
+# Repeateadly reads characters, converts it to desired base and puts result in a0
 # Characters should be in capital, stops at the first non complian char
+# a0: base (2..16)
+# -> a0: read number
+# -> a1: failed flag
 read_num:
     li $v1, 0
     addi $sp, $sp, -12
