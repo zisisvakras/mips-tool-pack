@@ -37,11 +37,11 @@ pow:
     mv t0, a0
     mv t1, a1
     bnez a0, pow1
-    li a0, 0            # 0^a
+    li a0, 0
     j pow3
     pow1:
     bnez a1, pow2
-    li a0, 1            # a^0
+    li a0, 1
     j pow3
     pow2:
     addi t1, t1, -1
@@ -80,7 +80,7 @@ strlen1:
     lb t0, 1(t1)
     addi t1, t1, 1
     bnez t0, strlen1
-    sub a0, t1, a0    # prepare return value
+    sub a0, t1, a0
     jr ra
 
 # Prints a number in a given base
@@ -111,7 +111,7 @@ printnum3:
     sub a0, sp, a0
     jr ra
 
-# Repeateadly reads characters, converts it to desired base and puts result in a0
+# Reads a number from input for a desired base.
 # Characters should be in capital, stops at the first non complian char
 # This behavior mimics a limited version of scanf from C standard library.
 # a0: base (2..16)
@@ -119,22 +119,22 @@ printnum3:
 # -> a1: failed flag
 # overwrites: t0, t1, a0, a1, a7
 readnum:
-    li a1, 0               # Set failed flag to 0
+    li a1, 0
     li t0, 0
-    mv t1, a0              # Store base in t1
+    mv t1, a0
 readnum1:
-    li a7, 12              # Read a character
+    li a7, 12
     ecall
-    addi a0, a0, -15       # Check if input was control
+    addi a0, a0, -15
     bltz a0, readnum4
-    addi a0, a0, -33       # Check if input is at least a digit
-    bltz a0, readnum3   
-    blt  a0, 10, readnum2  # Is it a digit?
-    addi a0, a0, -17       # Check >= 'A', for lower use -49
+    addi a0, a0, -33
     bltz a0, readnum3
-    addi a0, a0, 10        # Restore the value to 10..15
-readnum2:              
-    blt a0, t1, readnum5   # Is it a valid character for the base?
+    blt  a0, 10, readnum2
+    addi a0, a0, -17
+    bltz a0, readnum3
+    addi a0, a0, 10
+readnum2:
+    blt a0, t1, readnum5
 readnum3:
     li a1, 1
 readnum4:
@@ -154,22 +154,22 @@ readnum5:
 # -> a1: failed flag
 # overwrites: t0, t1, a0, a1
 strnum:
-    li a1, 0               # Set failed flag to 0
+    li a1, 0
     li t0, 0
-    mv t1, a0              # Store base in t1
+    mv t1, a0
 strnum1:
-    lbu a0, 0(a1)          # Read a character from string
-    addi a1, a1, 1         # Move to the next character
-    addi a0, a0, -15       # Check if input was control
+    lbu a0, 0(a1)
+    addi a1, a1, 1
+    addi a0, a0, -15
     bltz a0, strnum4
-    addi a0, a0, -33       # Check if input is at least a digit
-    bltz a0, strnum3   
-    blt  a0, 10, strnum2   # Is it a digit?
-    addi a0, a0, -17       # Check >= 'A', for lower use -49
+    addi a0, a0, -33
     bltz a0, strnum3
-    addi a0, a0, 10        # Restore the value to 10..15
-strnum2:              
-    blt a0, t1, strnum5   # Is it a valid character for the base?
+    blt  a0, 10, strnum2
+    addi a0, a0, -17
+    bltz a0, strnum3
+    addi a0, a0, 10
+strnum2:
+    blt a0, t1, strnum5
 strnum3:
     li a1, 1
 strnum4:

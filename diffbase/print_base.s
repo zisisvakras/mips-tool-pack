@@ -68,44 +68,30 @@ print_bin:
     lw  $t0, 0($sp)
     jr $ra
 
-# print an number in a given base
-# $a0: base 
-# $a1: the number to print
-# returns $v0: the number of chars printed
-print_val:
-    addi $sp, $sp, -52  # 4 regs + 33byte string + alignment
-    sw  $t0, 0($sp)     # save used regs to the stack
-    sw  $t1, 4($sp)
-    sw  $t2, 8($sp)
-    sw  $a1, 12($sp)
-
-    addi $t2, $sp, 51   # initialize and
-    sb $zero, 0($t2)    # null terminate the string
-
-print_val_loop:
-    addi $t2, $t2, -1   # fill string in reverse
-    divu $a1, $a0
-    mfhi $t0
-    mflo $a1
-    addi $t0, $t0, 48   # add '0' to get the ascii
-    slti $t1, $t0, 58   # if result is past 9
-    bne $t1, $zero, print_val_num
-    addi $t0, $t0, 7    # add an other 7 to get to 'A'
-print_val_num:
-    addi $v0, $v0, 1    # character counter
-    sb $t0, 0($t2)      # store the character in the string
-    bne $a1, $zero, print_val_loop
-    
-    add $t0, $a0, $zero # save regs before syscall
-    add $t1, $v0, $zero
-    li $v0, 4           # print string
-    add $a0, $t2, $zero
-    syscall  
-    add $a0, $t0, $zero # restore saved regs
-    add $v0, $t1, $zero
-    lw  $a1, 12($sp)    # pop the stack
-    lw  $t2, 8($sp)
-    lw  $t1, 4($sp)
-    lw  $t0, 0($sp)
-    addi $sp, $sp, 52
-    jr $ra
+# Prints a number in a given base
+# This behavior mimics a limited version of printf from C standard library.
+# a0: base (2..16)
+# a1: the number to print
+# -> a0: the number of chars printed
+# overwrites: t0, t1, t2, a0, a1, a7
+printnum:
+    addi sp, sp, -36
+    addi t2, sp, 35
+    sb zero, 0(t2)
+printnum2:
+    addi t2, t2, -1
+    divu t0, a1, a0
+    remu a1, a1, a0
+    addi t0, t0, 48
+    slti t1, t0, 58
+    bnez t1, printnum3
+    addi t0, t0, 7
+printnum3:
+    sb t0, 0(t2)
+    bnez a1, printnum2
+    li a7, 4
+    mv a0, t2
+    ecall
+    addi sp, sp, 36
+    sub a0, sp, a0
+    jr ra
