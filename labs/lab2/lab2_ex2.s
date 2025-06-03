@@ -1,0 +1,30 @@
+# Lab 2 - Exercise 2
+
+.text
+.globl __start
+
+__start:
+    lw s0, 0x10010000
+
+    # exit system call
+    li  a7, 10
+    ecall
+
+.data
+Bytes:  .byte 0x11, 0x22, 0x33, 0x44
+Word:   .word 0x88776655
+
+#   Address    Data
+#-------------------
+# 0x10010000   0x11
+# 0x10010001   0x22
+# 0x10010002   0x33
+# 0x10010003   0x44
+# 0x10010004   0x55
+# 0x10010005   0x66
+# 0x10010006   0x77
+# 0x10010007   0x88
+
+# Byte 3    Byte 2    Byte 1    Byte 0
+#--------------------------------------
+#  0x44      0x33      0x22      0x11
