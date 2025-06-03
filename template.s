@@ -130,7 +130,7 @@ readnum1:
     addi a0, a0, -33
     bltz a0, readnum3
     blt  a0, 10, readnum2
-    addi a0, a0, -17
+    addi a0, a0, -17        # For lowercase use -49
     bltz a0, readnum3
     addi a0, a0, 10
 readnum2:
@@ -165,7 +165,7 @@ strnum1:
     addi a0, a0, -33
     bltz a0, strnum3
     blt  a0, 10, strnum2
-    addi a0, a0, -17
+    addi a0, a0, -17        # For lowercase use -49
     bltz a0, strnum3
     addi a0, a0, 10
 strnum2:
