@@ -100,7 +100,8 @@ readnum1:
     bltz a0, readnum4
     addi a0, a0, -33       # Check if input is at least a digit
     bltz a0, readnum3   
-    blt  a0, 10, readnum2  # Is it a digit?
+    slti a7, a0, 10
+    bnez a7, readnum2      # Is it a digit?
     addi a0, a0, -17       # Check >= 'A', for lower use -49
     bltz a0, readnum3
     addi a0, a0, 10        # Restore the value to 10..15
@@ -135,7 +136,8 @@ strnum1:
     bltz a0, strnum4
     addi a0, a0, -33       # Check if input is at least a digit
     bltz a0, strnum3   
-    blt  a0, 10, strnum2   # Is it a digit?
+    slti a7, a0, 10
+    bnez a7, readnum2      # Is it a digit?
     addi a0, a0, -17       # Check >= 'A', for lower use -49
     bltz a0, strnum3
     addi a0, a0, 10        # Restore the value to 10..15

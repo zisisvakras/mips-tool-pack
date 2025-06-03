@@ -73,25 +73,26 @@ print_bin:
 # a0: base (2..16)
 # a1: the number to print
 # -> a0: the number of chars printed
-# overwrites: t0, t1, t2, a0, a1, a7
+# overwrites: t0, t1, a0, a1, a7
 printnum:
     addi sp, sp, -36
-    addi t2, sp, 35
-    sb zero, 0(t2)
+    addi t1, sp, 35
+    sb zero, 0(t1)
 printnum2:
-    addi t2, t2, -1
-    divu t0, a1, a0
-    remu a1, a1, a0
+    addi t1, t1, -1
+    remu t0, a1, a0
+    divu a1, a1, a0
     addi t0, t0, 48
-    slti t1, t0, 58
-    bnez t1, printnum3
+    slti a7, t0, 58
+    bnez a7, printnum3
     addi t0, t0, 7
 printnum3:
-    sb t0, 0(t2)
+    sb t0, 0(t1)
     bnez a1, printnum2
     li a7, 4
-    mv a0, t2
+    mv a0, t1
     ecall
     addi sp, sp, 36
-    sub a0, sp, a0
+    sub  a0, sp, a0
+    addi a0, a0, -1
     jr ra
