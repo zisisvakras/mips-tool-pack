@@ -4,11 +4,10 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <time.h>
+#include "game.h"
 #include "riscv.h"
 
 #define iso_range(x, i, j) (((x) >> (i)) & ((1U << ((j) - (i) + 1)) - 1))
-
-#define CHEAT
 
 // #define DEBUG
 #ifdef DEBUG
@@ -29,6 +28,7 @@ int regcmp(int reg, char *s) {
 }
 
 int main(int argc, char **argv) {
+    parse_args(argc, argv);
     srand(time(NULL) + getpid());
     if (regcomp(&preg, preg_pat, REG_EXTENDED)) return 1;
     while (1) {
@@ -103,10 +103,10 @@ int main(int argc, char **argv) {
         char *n0 = i.type == F_INSTR ? fence_f[r[0]] : regs[r[0]].name[0];
         char *n1 = i.type == F_INSTR ? fence_f[r[1]] : regs[r[1]].name[0];
         char *n2 = regs[r[2]].name[0];
-        #ifdef CHEAT
-        printf("Here mr. cheater: ");
-        printf(i_sets[i.type].fmt, i.name, n0, n1, n2, imm);
-        #endif
+        if (settings.cheat) {
+            printf("Here mr. cheater: ");
+            printf(i_sets[i.type].fmt, i.name, n0, n1, n2, imm);
+        }
         printf("Please input your guess: ");
         char guess[4096], *args[4];
         if (scanf(" %4095[^\n]", guess) != 1) break;
