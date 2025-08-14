@@ -164,4 +164,15 @@ char *fence_f[] = {
     "io", "iow", "ior", "iorw"
 };
 
+
+/* Mass validate input using posix regex */
+#include <regex.h>
+regex_t preg;
+char *preg_pat = 
+    "("
+    "^[a-zA-Z.]+[ \t]+[-a-zA-Z0-9]+(,[ \t]*[-a-zA-Z0-9()]+){1,2}[ \t]*$" // 2 or more args
+    ")|("
+    "^[a-zA-Z.]+[ \t]*$" // 0 args
+    ")";
+
 #endif // RISCV_H_

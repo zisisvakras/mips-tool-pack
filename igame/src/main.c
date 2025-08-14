@@ -8,7 +8,7 @@
 
 #define iso_range(x, i, j) (((x) >> (i)) & ((1U << ((j) - (i) + 1)) - 1))
 
-// #define CHEAT
+#define CHEAT
 
 // #define DEBUG
 #ifdef DEBUG
@@ -30,6 +30,7 @@ int regcmp(int reg, char *s) {
 
 int main(int argc, char **argv) {
     srand(time(NULL) + getpid());
+    if (regcomp(&preg, preg_pat, REG_EXTENDED)) return 1;
     while (1) {
         int iidx = rand() % instrc;
         instr_t i = instrs[iidx];
@@ -111,10 +112,11 @@ int main(int argc, char **argv) {
         if (scanf(" %4095[^\n]", guess) != 1) break;
         /* Check validity */
         char *q = guess;
+        if (regexec(&preg, q, 0, NULL, 0)) goto wrong;
         if (strncmp(q, i.name, strlen(i.name))) goto wrong;
         q += strlen(i.name);
         /* Check for proper format */
-        if (!isspace(*q) && i.type != E_INSTR) goto wrong; 
+        if (!isspace(*q) && i.type != E_INSTR) goto wrong; // redundant?
         args[0] = strtok(q, " \t,");
         for (int i = 1 ; i < 4 ; ++i)
             args[i] = strtok(NULL, " \t,");
