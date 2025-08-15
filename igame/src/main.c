@@ -169,7 +169,6 @@ int main(int argc, char **argv) {
         /* Third arg */
         dbg("4\n");
         if (i.type == R_INSTR) {
-    --questc;
             if (regcmp(r[2], args[2])) goto next;
         } else if (mystrnum(args[2]) != imm) goto next;
 
