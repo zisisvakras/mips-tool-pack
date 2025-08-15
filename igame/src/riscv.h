@@ -107,13 +107,14 @@ instr_t instrs[] = {
     {"bge",     SB_INSTR, 0x63, 0x5, 0},
     {"bltu",    SB_INSTR, 0x63, 0x6, 0},
     {"bgeu",    SB_INSTR, 0x63, 0x7, 0},
+
+
+    /* Not present in easy mode */
+    #define HARD_COUNT 7;
     {"jalr",    L_INSTR,  0x67, 0x0, 0},
     {"jal",     UJ_INSTR, 0x6f, 0,   0},
-
-
     {"auipc",   U_INSTR,  0x17, 0,   0},
     {"fence",   F_INSTR,  0x0f, 0x0, 0},
-
     // The world is not ready for this
     // {"CSRRW",   I_INSTR,  0x73, 0x1, 0},
     // {"CSRRS",   I_INSTR,  0x73, 0x2, 0},
@@ -121,13 +122,12 @@ instr_t instrs[] = {
     // {"CSRRWI",  I_INSTR,  0x73, 0x5, 0},
     // {"CSRRSI",  I_INSTR,  0x73, 0x6, 0},
     // {"CSRRCI",  I_INSTR,  0x73, 0x7, 0},
-
     {"fence.i", E_INSTR,  0x0000100f, 0, 0},
     {"ecall",   E_INSTR,  0x00000073, 0, 0},
     {"ebreak",  E_INSTR,  0x00100073, 0 ,0}
 };
 
-int instrc = sizeof(instrs) / sizeof(instr_t);
+int instrc = sizeof(instrs) / sizeof(instr_t) - HARD_COUNT;
 int regc = sizeof(regs) / sizeof(reg_t);
 
 /* Instruction settings */

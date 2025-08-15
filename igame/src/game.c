@@ -1,23 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <limits.h>
 #include "game.h"
 
 game_settings settings;
 
+void help_text(char *s);
+
 int parse_args(int argc, char **argv) {
+    settings.xnames = 1;
+    settings.limit = LONG_MAX;
     static struct option long_options[] = {
-        {"cheat", no_argument, &settings.cheat, 1}, // 'c'
-        {"all",   no_argument, &settings.all,   1}, // 'a'
+        {"cheat",  no_argument, &settings.cheat,  1}, // 'c'
+        {"all",    no_argument, &settings.all,    1}, // 'a'
+        {"xnames", no_argument, &settings.xnames, 0}, // 'x'
+        {"limit",  required_argument, 0,          0}, // 'l'
+
+        {"help",   no_argument, 0, 0}, // 'h'
         {0, 0, 0, 0}
     };
-    int c;
+    int c, longidx;
+    // opterr = 0;
     while (1) {
-        c = getopt_long(argc, argv, "ca", long_options, NULL);
+        c = getopt_long(argc, argv, "caxhl:", long_options, &longidx);
         if (c == -1) break;
         switch (c) {
             case 0: // longopt
+                if (!strcmp("help", long_options[longidx].name))
+                    help_text(argv[0]);
+                else if (!strcmp("limit", long_options[longidx].name))
+                    settings.limit = strtol(optarg, NULL, 10);
+                break;
+            case 'l':
+                settings.limit = strtol(optarg, NULL, 10);
                 break;
             case 'c':
                 settings.cheat = 1;
@@ -25,12 +43,36 @@ int parse_args(int argc, char **argv) {
             case 'a':
                 settings.all = 1;
                 break;
+            case 'x':
+                settings.xnames = 0;
+                break;
+            case 'h':
+                help_text(argv[0]);
             case '?':
-                fprintf(stderr, "Unknown option %s\n", argv[optind]);
+                fprintf(stderr, "Try \'%s --help\' for more information\n", argv[0]);
                 exit(1);   
             default:
                 fprintf(stderr, "getopt returned 0x%x\n", c);
                 exit(1);
         }
     }
+    if (optind != argc) {
+        fprintf(stderr, "Invalid arguments\n");
+        fprintf(stderr, "Try \'%s --help\' for more information\n", argv[0]);
+        exit(1);
+    }
+}
+
+void help_text(char *s) {
+    printf("Usage: %s [OPTION]...\n\n"
+    "Mandatory arguments to long options are mandatory for short options too.\n"
+    "Options:\n"
+    "    -a, --all      Include all instructions from the reference sheet\n"
+    "    -c, --cheat    Answers before questions, mr. cheater....\n"
+    "    -h, --help     Displays this text\n"
+    "    -x, --xnames   Use the x?? names for registers\n"
+    "    -l, --limit=N  Limit the game to N iterations\n"
+    "\n", s
+    );
+    exit(0);
 }

@@ -4,6 +4,8 @@
 typedef struct game_settings {
     int cheat;
     int all;
+    int xnames;
+    long limit;
 } game_settings;
 
 extern game_settings settings;
