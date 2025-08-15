@@ -4,13 +4,29 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <limits.h>
+#include <unistd.h>
+#include <time.h>
 #include "game.h"
 
+#define DEFAULT_BACKEND "riscv"
+
 game_settings settings;
+extern struct arch_t arch_riscv;
+
+static struct arch_t *_backends[] = {
+    &arch_riscv,
+    NULL 
+};
+
+struct arch_t *arch;
 
 void help_text(char *s);
 
-int parse_args(int argc, char **argv) {
+int game_init(int argc, char **argv) {
+    // Setup proper rand
+    srand(time(NULL) + getpid());
+
+    // Command arguments
     settings.xnames = 1;
     settings.limit = LONG_MAX;
     static struct option long_options[] = {
@@ -61,6 +77,14 @@ int parse_args(int argc, char **argv) {
         fprintf(stderr, "Try \'%s --help\' for more information\n", argv[0]);
         exit(1);
     }
+
+    // TODO add some login to choosing an arch
+    arch = _backends[0];
+    arch->init();
+}
+
+void game_destroy(void) {
+    arch->destroy();
 }
 
 void help_text(char *s) {
