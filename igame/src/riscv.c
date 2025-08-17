@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <regex.h>
+#include <limits.h>
 #include "game.h"
 
 #define iso_range(x, i, j) (((x) >> (i)) & ((1U << ((j) - (i) + 1)) - 1))
@@ -204,8 +205,8 @@ static int mystrnum(char *s) {
     return atoi(s);
 }
 
-static instr_t __random(int idx) {
-    if (idx == 0) idx = rand() % instrc;
+static instr_t __random(size_t idx) {
+    if (idx == -1ULL) idx = rand() % instrc;
     instr_src_t isrc = instrs_src[idx];
     instr_t i = calloc(1, sizeof(*i));
     i->src = &instrs_src[idx];
@@ -311,7 +312,7 @@ instr_t seq_random_instr() {
 }
 
 instr_t random_instr() {
-    return __random(0);
+    return __random(-1ULL);
 }
 
 /**
