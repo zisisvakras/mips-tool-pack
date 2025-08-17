@@ -3,9 +3,9 @@
 
 int main(int argc, char **argv) {
     game_init(argc, argv);
-    long questc = 1, score = 0;
-    for ( ; questc <= settings.limit ; ++questc) { 
-        instr_t i = arch->rand();
+    long questc = 1, score = 0; 
+    instr_t i = arch->rand();
+    for ( ; questc <= settings.limit ; ++questc) {
         printf("Instruction hex is: ");
         arch->hex(i);
         printf("\n");
@@ -25,7 +25,10 @@ int main(int argc, char **argv) {
         arch->print(i);
         printf("\n");
         printf("Your score is: %ld / %ld (%.2f%%)\n\n", score, questc, (100.0 * score) / questc);
+        arch->free(i);
+        i = arch->rand();
     }
+    arch->free(i);
     printf("\nThanks for playing\n");
     if (--questc)
         printf("Your final score is: %ld / %ld (%.2f%%)\n", score, questc, (100.0 * score) / questc);

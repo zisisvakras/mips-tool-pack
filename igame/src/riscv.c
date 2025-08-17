@@ -122,7 +122,7 @@ instr_src_t instrs_src[] = {
     {"fence",   F_INSTR,  0x0f, 0x0, 0},
     {"fence.i", E_INSTR,  0x0000100f, 0, 0},
     {"ecall",   E_INSTR,  0x00000073, 0, 0},
-    {"ebreak",  E_INSTR,  0x00100073, 0 ,0}
+    {"ebreak",  E_INSTR,  0x00100073, 0, 0}
     // The world is not ready for this
     // {"csrrw",   I_INSTR,  0x73, 0x1, 0},
     // {"csrrs",   I_INSTR,  0x73, 0x2, 0},

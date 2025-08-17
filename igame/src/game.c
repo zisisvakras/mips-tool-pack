@@ -78,7 +78,7 @@ int game_init(int argc, char **argv) {
         exit(1);
     }
 
-    // TODO add some login to choosing an arch
+    // TODO add some logic to choosing an arch
     arch = _backends[0];
     arch->init();
 }
