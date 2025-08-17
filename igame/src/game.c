@@ -33,6 +33,7 @@ int game_init(int argc, char **argv) {
         {"cheat",  no_argument, &settings.cheat,  1}, // 'c'
         {"all",    no_argument, &settings.all,    1}, // 'a'
         {"xnames", no_argument, &settings.xnames, 0}, // 'x'
+        {"seq",    no_argument, &settings.seq,    1}, // 's'
         {"limit",  required_argument, 0,          0}, // 'l'
 
         {"help",   no_argument, 0, 0}, // 'h'
@@ -41,7 +42,7 @@ int game_init(int argc, char **argv) {
     int c, longidx;
     // opterr = 0;
     while (1) {
-        c = getopt_long(argc, argv, "caxhl:", long_options, &longidx);
+        c = getopt_long(argc, argv, "caxsl:h", long_options, &longidx);
         if (c == -1) break;
         switch (c) {
             case 0: // longopt
@@ -58,6 +59,9 @@ int game_init(int argc, char **argv) {
                 break;
             case 'a':
                 settings.all = 1;
+                break;
+            case 's':
+                settings.seq = 1;
                 break;
             case 'x':
                 settings.xnames = 0;
@@ -95,6 +99,7 @@ void help_text(char *s) {
     "    -c, --cheat    Answers before questions, mr. cheater....\n"
     "    -h, --help     Displays this text\n"
     "    -x, --xnames   Use the x?? names for registers\n"
+    "    -s, --seq      Do not repeat instructions\n"
     "    -l, --limit=N  Limit the game to N iterations\n"
     "\n", s
     );

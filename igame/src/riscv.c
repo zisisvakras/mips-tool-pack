@@ -132,7 +132,9 @@ instr_src_t instrs_src[] = {
     // {"csrrci",  I_INSTR,  0x73, 0x7, 0},
 };
 
-int instrc = sizeof(instrs_src) / sizeof(instr_src_t) - HARD_COUNT;
+#define TOTAL_INSTRUCTIONS (sizeof(instrs_src) / sizeof(instr_src_t))
+
+int instrc = TOTAL_INSTRUCTIONS - HARD_COUNT;
 int regc = sizeof(regs) / sizeof(reg_t);
 
 /* Instruction settings */
@@ -202,18 +204,11 @@ static int mystrnum(char *s) {
     return atoi(s);
 }
 
-/* External shit */
-
-int arch_init(void) {
-    if (settings.all) instrc += HARD_COUNT;
-    return regcomp(&preg, preg_pat, REG_EXTENDED);
-}
-
-instr_t random_instr() {
-    int iidx = rand() % instrc;
-    instr_src_t isrc = instrs_src[iidx];
+static instr_t __random(int idx) {
+    if (idx == 0) idx = rand() % instrc;
+    instr_src_t isrc = instrs_src[idx];
     instr_t i = calloc(1, sizeof(*i));
-    i->src = &instrs_src[iidx];
+    i->src = &instrs_src[idx];
     i->hex = isrc.opcode | (isrc.funct3 << 12) | (isrc.funct7 << 25);
     i->imm = rand();
     /* Initialize regs */
@@ -288,6 +283,35 @@ instr_t random_instr() {
         i->n1 = regs[i->r[1]].name[settings.xnames];
     }
     i->n2 = regs[i->r[2]].name[settings.xnames];
+}
+
+/* External shit */
+
+int arch_init(void) {
+    if (settings.all) instrc += HARD_COUNT;
+    return regcomp(&preg, preg_pat, REG_EXTENDED);
+}
+
+instr_t seq_random_instr() {
+    static size_t seq_sz;
+    static size_t left[TOTAL_INSTRUCTIONS];
+
+    if (seq_sz == 0) {
+        seq_sz = instrc;
+        for (size_t i = 0 ; i < seq_sz ; ++i)
+            left[i] = i;
+    }
+
+    size_t seq_idx = rand() % seq_sz;
+    size_t idx = left[seq_idx];
+    if (seq_idx != --seq_sz)
+        left[seq_idx] = left[seq_sz];
+
+    return __random(idx);
+}
+
+instr_t random_instr() {
+    return __random(0);
 }
 
 /**
@@ -374,6 +398,7 @@ struct arch_t arch_riscv = {
     "riscv",
     &arch_init,
     &random_instr,
+    &seq_random_instr,
     &validate_instr,
     &print_hex,
     &print_instr,

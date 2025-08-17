@@ -5,6 +5,7 @@ typedef struct game_settings {
     int cheat;
     int all;
     int xnames;
+    int seq;
     long limit;
 } game_settings;
 
@@ -24,6 +25,14 @@ struct arch_t {
      *  this needs to be destroyed using free func
      */
     instr_t (*rand)(void);
+
+    /** 
+     *  Produce a random instruction using rand,
+     *  different instructions will be given till all
+     *  instructions have been randomly given,
+     *  this needs to be destroyed using free func
+     */
+    instr_t (*rand_seq)(void);
 
     /**
      *  Validate a string if it fits the instruction
