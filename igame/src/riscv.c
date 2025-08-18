@@ -202,8 +202,35 @@ static int regcmp(int reg, char *s) {
 }
 
 static int mystrnum(char *s) {
+    if (s[0] == '0') {
+
+	int base;
+	switch(s[1]) {
+	    case 'x':
+	    case 'X':
+		base = 16;
+		break;
+	    case 'o':
+	    case 'O':
+		base = 8;
+		break;
+	    case 'b':
+	    case 'B':
+		base = 2;
+		break;
+	    default:
+		return atoi(s);
+	}
+
+	s += 2;
+
+	return (int)strtol(s, NULL, base);
+
+    }
+
     return atoi(s);
 }
+
 
 static instr_t __random(size_t idx) {
     if (idx == -1ULL) idx = rand() % instrc;
@@ -379,7 +406,7 @@ int validate_instr(instr_t i, char *s) {
 }
 
 void print_hex(instr_t i) {
-    printf("%08x", i->hex);
+    printf("0x%08x", i->hex);
 }
 
 void free_instr(instr_t i) {
