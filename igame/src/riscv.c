@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <regex.h>
 #include <limits.h>
+#include <errno.h>
 #include "game.h"
 
 #define iso_range(x, i, j) (((x) >> (i)) & ((1U << ((j) - (i) + 1)) - 1))
@@ -22,7 +23,7 @@ typedef enum itype {
 } itype;
 
 /* Source information for each instruction */
-typedef struct instr_src_t { 
+typedef struct instr_src_t {
     char *name;
     itype type;
     int opcode;
@@ -145,23 +146,25 @@ typedef struct i_set_t {
     int rd;
     int rs1;
     int rs2;
+    /* Immediate size */
+    size_t immsz;
     /* Print format (mnem, r0, r1, r2, imm) */
     char *fmt;
 } i_set_t;
 
 i_set_t i_sets[] = {
-    [R_INSTR]  = {3, 0, 1, 2, "%1$s %2$s, %3$s, %4$s"},
-    [I_INSTR]  = {3, 0, 1, 2, "%1$s %2$s, %3$s, %5$d"},
-    [SF_INSTR] = {3, 0, 1, 2, "%1$s %2$s, %3$s, %5$d"},
-    [L_INSTR]  = {2, 0, 1, 2, "%1$s %2$s, %5$d(%3$s)"},
-    [S_INSTR]  = {2, 2, 1, 0, "%1$s %2$s, %5$d(%3$s)"},
-    [SB_INSTR] = {3, 2, 0, 1, "%1$s %2$s, %3$s, %5$d"},
-    [U_INSTR]  = {2, 0, 1, 2, "%1$s %2$s, %5$d"},
-    [UJ_INSTR] = {2, 0, 1, 2, "%1$s %2$s, %5$d"},
+    [R_INSTR]  = {3, 0, 1, 2,  0, "%1$s %2$s, %3$s, %4$s"},
+    [I_INSTR]  = {3, 0, 1, 2, 12, "%1$s %2$s, %3$s, %5$d"},
+    [SF_INSTR] = {3, 0, 1, 2,  6, "%1$s %2$s, %3$s, %5$d"},
+    [L_INSTR]  = {2, 0, 1, 2, 12, "%1$s %2$s, %5$d(%3$s)"},
+    [S_INSTR]  = {2, 2, 1, 0, 12, "%1$s %2$s, %5$d(%3$s)"},
+    [SB_INSTR] = {3, 2, 0, 1, 12, "%1$s %2$s, %3$s, %5$d"},
+    [U_INSTR]  = {2, 0, 1, 2, 20, "%1$s %2$s, %5$d"},
+    [UJ_INSTR] = {2, 0, 1, 2, 20, "%1$s %2$s, %5$d"},
 
     // whatever
-    [F_INSTR]  = {2, 0, 1, 2, "%1$s %2$s, %3$s"},
-    [E_INSTR]  = {0, 0, 1, 2, "%1$s"}
+    [F_INSTR]  = {2, 0, 1, 2,  0, "%1$s %2$s, %3$s"},
+    [E_INSTR]  = {0, 0, 1, 2,  0, "%1$s"}
 };
 
 /* fence flags */
@@ -174,7 +177,7 @@ char *fence_f[] = {
 
 /* Mass validate input using posix regex */
 regex_t preg;
-char *preg_pat = 
+char *preg_pat =
     "("
     "^[a-zA-Z.]+[ \t]+[-a-zA-Z0-9]+(,[ \t]*[-a-zA-Z0-9()]+){1,2}[ \t]*$" // 2 or more args
     ")|("
@@ -201,34 +204,29 @@ static int regcmp(int reg, char *s) {
     return 1;
 }
 
-static int mystrnum(char *s) {
-    if (s[0] == '0') {
+static int mystrnum(char *s, size_t immsz) {
+	int base = 10;
+    errno = 0;
+    immsz = 32 - immsz; // We only use the rest
 
-	int base;
-	switch(s[1]) {
-	    case 'x':
-	    case 'X':
-		base = 16;
-		break;
-	    case 'o':
-	    case 'O':
-		base = 8;
-		break;
-	    case 'b':
-	    case 'B':
-		base = 2;
-		break;
-	    default:
-		return atoi(s);
-	}
-
-	s += 2;
-
-	return (int)strtol(s, NULL, base);
-
+    if (*s) {
+        switch (s[1]) {
+            case 'x':
+            case 'X':
+            base += 8;
+            case 'o':
+            case 'O':
+            base += 6;
+            case 'b':
+            case 'B':
+            base -= 8;
+	        s += 2;
+        }
     }
 
-    return atoi(s);
+    int res = strtol(s, NULL, base);
+    /* We wont check if input is the correct sz f this */
+	return (res << immsz) >> immsz;
 }
 
 
@@ -264,6 +262,8 @@ static instr_t __random(size_t idx) {
         case UJ_INSTR:
             i->hex |= (rd << 7);
     }
+    int mask = 32 - i_sets[isrc.type].immsz;
+    i->imm = (i->imm << mask) >> mask;
     if (isrc.type == SF_INSTR)
         i->imm = rs2;
     if (isrc.type == F_INSTR) {
@@ -272,21 +272,15 @@ static instr_t __random(size_t idx) {
         i->imm  = (i->r[0] << 4) | i->r[1];
         i->hex |= i->imm << 20;
     }
-    if (isrc.type == I_INSTR || isrc.type == L_INSTR) {
-        i->imm = (i->imm << 20) >> 20; // mask, extend
-        i->hex |= (i->imm << 20);
-    }
-    if (isrc.type == U_INSTR) {
-        i->imm = (i->imm << 12) >> 12; // mask, extend
-        i->hex |= (i->imm << 12);
+    if (isrc.type == I_INSTR || isrc.type == L_INSTR || isrc.type == U_INSTR) {
+        i->hex |= (i->imm << mask);
     }
     if (isrc.type == S_INSTR) {
-        i->imm = (i->imm << 20) >> 20; // mask, extend
         i->hex |= ((i->imm & ~0x1f) << 20);
         i->hex |= ((i->imm & 0x1f) << 7);
     }
     if (isrc.type == SB_INSTR) { // fuck riscv
-        i->imm = (i->imm << 21) >> 20; // mask, extend
+        i->imm <<= 1;
         int imm1 = (iso_range(i->imm, 11, 11))
                  | (iso_range(i->imm, 1, 4) << 1);
         int imm2 = (iso_range(i->imm, 5, 10))
@@ -294,7 +288,7 @@ static instr_t __random(size_t idx) {
         i->hex |= (imm2 << 25) | (imm1 << 7);
     }
     if (isrc.type == UJ_INSTR) {
-        i->imm = (i->imm << 13) >> 12; // mask, extend
+        i->imm <<= 1;
         int comb = (iso_range(i->imm, 12, 19))
                  | (iso_range(i->imm, 11, 11) << 8)
                  | (iso_range(i->imm,  1, 10) << 9)
@@ -344,7 +338,7 @@ instr_t random_instr() {
 
 /**
  *  Returns 1 if string is not valid, 0 for success
- *  FIXME?? Irreversably corrupts input string 
+ *  FIXME?? Irreversably corrupts input string
  */
 int validate_instr(instr_t i, char *s) {
     itype type = i->src->type;
@@ -373,13 +367,14 @@ int validate_instr(instr_t i, char *s) {
 
     /* Second arg */
     char off_s[10], reg_s[10], trail[10];
+    int immsz = i_sets[type].immsz;
     switch (type) {
         case S_INSTR:
         case L_INSTR:
-            if (sscanf(args[1], "%9[^(](%9[^)]%2s", off_s, reg_s, trail) != 3) 
+            if (sscanf(args[1], "%9[^(](%9[^)]%2s", off_s, reg_s, trail) != 3)
                 return 1;
             if (strcmp(trail, ")")) return 1;
-            if (mystrnum(off_s) != i->imm) return 1;
+            if (mystrnum(off_s, immsz) != i->imm || errno) return 1;
             args[1] = reg_s;
         case R_INSTR:
         case SF_INSTR:
@@ -389,7 +384,7 @@ int validate_instr(instr_t i, char *s) {
             break;
         case U_INSTR:
         case UJ_INSTR:
-            if (mystrnum(args[1]) != i->imm) return 1;
+            if (mystrnum(args[1], immsz) != i->imm || errno) return 1;
             break;
         case F_INSTR:
             if (strcasecmp(i->n1, args[1])) return 1;
@@ -400,7 +395,7 @@ int validate_instr(instr_t i, char *s) {
     /* Third arg */
     if (type == R_INSTR) {
         if (regcmp(i->r[2], args[2])) return 1;
-    } else if (mystrnum(args[2]) != i->imm) return 1;
+    } else if (mystrnum(args[2], immsz) != i->imm || errno) return 1;
 
     return 0;
 }
