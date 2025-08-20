@@ -6,6 +6,7 @@ typedef struct game_settings {
     int all;
     int xnames;
     int seq;
+    int rev;
     long limit;
 } game_settings;
 
@@ -20,13 +21,13 @@ struct arch_t {
     /* Initialize arch, should be done on game start */
     int (*init)(void);
 
-    /** 
+    /**
      *  Produce a random instruction using rand,
      *  this needs to be destroyed using free func
      */
     instr_t (*rand)(void);
 
-    /** 
+    /**
      *  Produce a random instruction using rand,
      *  different instructions will be given till all
      *  instructions have been randomly given,
@@ -38,6 +39,11 @@ struct arch_t {
      *  Validate a string if it fits the instruction
      */
     int (*validate)(instr_t, char *);
+
+    /**
+     *  Validate a string if it fits the instruction hex
+     */
+    int (*validate_hex)(instr_t, char *);
 
     /* Print the instruction hex */
     void (*hex)(instr_t);

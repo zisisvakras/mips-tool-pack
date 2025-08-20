@@ -158,9 +158,9 @@ i_set_t i_sets[] = {
     [SF_INSTR] = {3, 0, 1, 2,  6, "%1$s %2$s, %3$s, %5$d"},
     [L_INSTR]  = {2, 0, 1, 2, 12, "%1$s %2$s, %5$d(%3$s)"},
     [S_INSTR]  = {2, 2, 1, 0, 12, "%1$s %2$s, %5$d(%3$s)"},
-    [SB_INSTR] = {3, 2, 0, 1, 12, "%1$s %2$s, %3$s, %5$d"},
+    [SB_INSTR] = {3, 2, 0, 1, 13, "%1$s %2$s, %3$s, %5$d"},
     [U_INSTR]  = {2, 0, 1, 2, 20, "%1$s %2$s, %5$d"},
-    [UJ_INSTR] = {2, 0, 1, 2, 20, "%1$s %2$s, %5$d"},
+    [UJ_INSTR] = {2, 0, 1, 2, 21, "%1$s %2$s, %5$d"},
 
     // whatever
     [F_INSTR]  = {2, 0, 1, 2,  0, "%1$s %2$s, %3$s"},
@@ -280,7 +280,7 @@ static instr_t __random(size_t idx) {
         i->hex |= ((i->imm & 0x1f) << 7);
     }
     if (isrc.type == SB_INSTR) { // fuck riscv
-        i->imm <<= 1;
+        i->imm &= ~1;
         int imm1 = (iso_range(i->imm, 11, 11))
                  | (iso_range(i->imm, 1, 4) << 1);
         int imm2 = (iso_range(i->imm, 5, 10))
@@ -288,7 +288,7 @@ static instr_t __random(size_t idx) {
         i->hex |= (imm2 << 25) | (imm1 << 7);
     }
     if (isrc.type == UJ_INSTR) {
-        i->imm <<= 1;
+        i->imm &= ~1;
         int comb = (iso_range(i->imm, 12, 19))
                  | (iso_range(i->imm, 11, 11) << 8)
                  | (iso_range(i->imm,  1, 10) << 9)
@@ -337,33 +337,33 @@ instr_t random_instr() {
 }
 
 /**
- *  Returns 1 if string is not valid, 0 for success
+ *  Returns 0 if string is not valid, 1 for success
  *  FIXME?? Irreversably corrupts input string
  */
 int validate_instr(instr_t i, char *s) {
     itype type = i->src->type;
     char *iname = i->src->name;
-    if (regexec(&preg, s, 0, NULL, 0)) return 1;
-    if (strncasecmp(s, iname, strlen(iname))) return 1;
+    if (regexec(&preg, s, 0, NULL, 0)) return 0;
+    if (strncasecmp(s, iname, strlen(iname))) return 0;
     s += strlen(iname);
     /* Check for proper format */
-    if (!isspace(*s) && type != E_INSTR) return 1; // redundant?
+    if (!isspace(*s) && type != E_INSTR) return 0; // redundant?
     char *args[4];
     args[0] = strtok(s, " \t,");
     for (int i = 1 ; i < 4 ; ++i)
         args[i] = strtok(NULL, " \t,");
     int ntok = -1;
     while (args[++ntok]);
-    if (i_sets[type].req_args != ntok) return 1;
+    if (i_sets[type].req_args != ntok) return 0;
 
-    if(i_sets[type].req_args == 0) return 0;
+    if(i_sets[type].req_args == 0) return 1;
 
     /* First arg */
     if (type != F_INSTR) {
-        if (regcmp(i->r[0], args[0])) return 1;
-    } else if (strcasecmp(i->n0, args[0])) return 1;
+        if (regcmp(i->r[0], args[0])) return 0;
+    } else if (strcasecmp(i->n0, args[0])) return 0;
 
-    if(i_sets[type].req_args == 1) return 0;
+    if(i_sets[type].req_args == 1) return 1;
 
     /* Second arg */
     char off_s[10], reg_s[10], trail[10];
@@ -372,32 +372,43 @@ int validate_instr(instr_t i, char *s) {
         case S_INSTR:
         case L_INSTR:
             if (sscanf(args[1], "%9[^(](%9[^)]%2s", off_s, reg_s, trail) != 3)
-                return 1;
-            if (strcmp(trail, ")")) return 1;
-            if (mystrnum(off_s, immsz) != i->imm || errno) return 1;
+                return 0;
+            if (strcmp(trail, ")")) return 0;
+            if (mystrnum(off_s, immsz) != i->imm || errno) return 0;
             args[1] = reg_s;
         case R_INSTR:
         case SF_INSTR:
         case I_INSTR:
         case SB_INSTR:
-            if (regcmp(i->r[1], args[1])) return 1;
+            if (regcmp(i->r[1], args[1])) return 0;
             break;
         case U_INSTR:
         case UJ_INSTR:
-            if (mystrnum(args[1], immsz) != i->imm || errno) return 1;
+            if (mystrnum(args[1], immsz) != i->imm || errno) return 0;
             break;
         case F_INSTR:
-            if (strcasecmp(i->n1, args[1])) return 1;
+            if (strcasecmp(i->n1, args[1])) return 0;
     }
 
-    if(i_sets[type].req_args == 2) return 0;
+    if(i_sets[type].req_args == 2) return 1;
 
     /* Third arg */
     if (type == R_INSTR) {
-        if (regcmp(i->r[2], args[2])) return 1;
-    } else if (mystrnum(args[2], immsz) != i->imm || errno) return 1;
+        if (regcmp(i->r[2], args[2])) return 0;
+    } else if (mystrnum(args[2], immsz) != i->imm || errno) return 0;
 
-    return 0;
+    return 1;
+}
+
+
+/**
+ *  Returns 0 if string is not valid, 1 for success
+ *  FIXME?? Irreversably corrupts input string
+ */
+int validate_hex(instr_t i, char *s) {
+    return (s = strtok(s, " \t"))
+        && !strtok(NULL, " \t")
+        && ((int)strtol(s, NULL, 16)) == i->hex;
 }
 
 void print_hex(instr_t i) {
@@ -423,6 +434,7 @@ struct arch_t arch_riscv = {
     &random_instr,
     &seq_random_instr,
     &validate_instr,
+    &validate_hex,
     &print_hex,
     &print_instr,
     &free_instr,

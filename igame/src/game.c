@@ -15,7 +15,7 @@ extern struct arch_t arch_riscv;
 
 static struct arch_t *_backends[] = {
     &arch_riscv,
-    NULL 
+    NULL
 };
 
 struct arch_t *arch;
@@ -30,11 +30,12 @@ int game_init(int argc, char **argv) {
     settings.xnames = 1;
     settings.limit = LONG_MAX;
     static struct option long_options[] = {
-        {"cheat",  no_argument, &settings.cheat,  1}, // 'c'
-        {"all",    no_argument, &settings.all,    1}, // 'a'
-        {"xnames", no_argument, &settings.xnames, 0}, // 'x'
-        {"seq",    no_argument, &settings.seq,    1}, // 's'
-        {"limit",  required_argument, 0,          0}, // 'l'
+        {"cheat",   no_argument, &settings.cheat,  1}, // 'c'
+        {"all",     no_argument, &settings.all,    1}, // 'a'
+        {"xnames",  no_argument, &settings.xnames, 0}, // 'x'
+        {"seq",     no_argument, &settings.seq,    1}, // 's'
+        {"reverse", no_argument, &settings.rev,    1}, // 'r'
+        {"limit",   required_argument, 0,          0}, // 'l'
 
         {"help",   no_argument, 0, 0}, // 'h'
         {0, 0, 0, 0}
@@ -42,7 +43,7 @@ int game_init(int argc, char **argv) {
     int c, longidx;
     // opterr = 0;
     while (1) {
-        c = getopt_long(argc, argv, "caxsl:h", long_options, &longidx);
+        c = getopt_long(argc, argv, "caxsrl:h", long_options, &longidx);
         if (c == -1) break;
         switch (c) {
             case 0: // longopt
@@ -63,6 +64,9 @@ int game_init(int argc, char **argv) {
             case 's':
                 settings.seq = 1;
                 break;
+            case 'r':
+                settings.rev = 1;
+                break;
             case 'x':
                 settings.xnames = 0;
                 break;
@@ -70,7 +74,7 @@ int game_init(int argc, char **argv) {
                 help_text(argv[0]);
             case '?':
                 fprintf(stderr, "Try \'%s --help\' for more information\n", argv[0]);
-                exit(1);   
+                exit(1);
             default:
                 fprintf(stderr, "getopt returned 0x%x\n", c);
                 exit(1);
@@ -100,6 +104,7 @@ void help_text(char *s) {
     "    -h, --help     Displays this text\n"
     "    -x, --xnames   Use the x?? names for registers\n"
     "    -s, --seq      Do not repeat instructions\n"
+    "    -r, --reverse  Play the reverse game\n"
     "    -l, --limit=N  Limit the game to N iterations\n"
     "\n", s
     );

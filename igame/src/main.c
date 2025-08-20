@@ -3,29 +3,41 @@
 
 int main(int argc, char **argv) {
     game_init(argc, argv);
-    long questc = 1, score = 0; 
+    long questc = 1, score = 0;
     instr_t i;
     if (!settings.seq) i = arch->rand();
     else i = arch->rand_seq();
     for ( ; questc <= settings.limit ; ++questc) {
-        printf("Instruction hex is: ");
-        arch->hex(i);
+
+        printf("Instruction is: ");
+        if (!settings.rev) arch->hex(i);
+        else arch->print(i);
         printf("\n");
+
         if (settings.cheat) {
             printf("Here mr. cheater: ");
-            arch->print(i);
+            if (!settings.rev) arch->print(i);
+            else arch->hex(i);
             printf("\n");
         }
+
         printf("Please input your guess: ");
         char guess[4096];
         if (scanf(" %4095[^\n]", guess) != 1) break;
+
         /* Check validity */
-        int correct = arch->validate(i, guess) == 0;
+        int correct;
+        if (!settings.rev)
+            correct = arch->validate(i, guess);
+        else correct = arch->validate_hex(i, guess);
         score += correct;
+
         printf("%s, ", correct ? "Correct" : "Wrong");
         printf("my instruction was: ");
-        arch->print(i);
+        if (!settings.rev) arch->print(i);
+        else arch->hex(i);
         printf("\n");
+
         printf("Your score is: %ld / %ld (%.2f%%)\n\n", score, questc, (100.0 * score) / questc);
         arch->free(i);
         if (!settings.seq) i = arch->rand();
