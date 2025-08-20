@@ -214,9 +214,11 @@ static int mystrnum(char *s, size_t immsz) {
             case 'x':
             case 'X':
             base += 8;
+            // fall through
             case 'o':
             case 'O':
             base += 6;
+            // fall through
             case 'b':
             case 'B':
             base -= 8;
@@ -251,6 +253,7 @@ static instr_t __random(size_t idx) {
         case L_INSTR:
         case SF_INSTR:
             i->hex |= (rd << 7);
+            // fall through
         case S_INSTR:
         case SB_INSTR:
             i->hex |= (rs1 << 15);
@@ -261,6 +264,8 @@ static instr_t __random(size_t idx) {
         case U_INSTR:
         case UJ_INSTR:
             i->hex |= (rd << 7);
+            break;
+        default: break;
     }
     int mask = 32 - i_sets[isrc.type].immsz;
     i->imm = (i->imm << mask) >> mask;
@@ -305,6 +310,7 @@ static instr_t __random(size_t idx) {
         i->n1 = regs[i->r[1]].name[settings.xnames];
     }
     i->n2 = regs[i->r[2]].name[settings.xnames];
+    return i;
 }
 
 /* External shit */
@@ -346,8 +352,7 @@ int validate_instr(instr_t i, char *s) {
     if (regexec(&preg, s, 0, NULL, 0)) return 0;
     if (strncasecmp(s, iname, strlen(iname))) return 0;
     s += strlen(iname);
-    /* Check for proper format */
-    if (!isspace(*s) && type != E_INSTR) return 0; // redundant?
+    /* Separate args */
     char *args[4];
     args[0] = strtok(s, " \t,");
     for (int i = 1 ; i < 4 ; ++i)
@@ -376,6 +381,7 @@ int validate_instr(instr_t i, char *s) {
             if (strcmp(trail, ")")) return 0;
             if (mystrnum(off_s, immsz) != i->imm || errno) return 0;
             args[1] = reg_s;
+            // fall through
         case R_INSTR:
         case SF_INSTR:
         case I_INSTR:
@@ -388,6 +394,7 @@ int validate_instr(instr_t i, char *s) {
             break;
         case F_INSTR:
             if (strcasecmp(i->n1, args[1])) return 0;
+        default: break;
     }
 
     if(i_sets[type].req_args == 2) return 1;

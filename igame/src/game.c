@@ -72,6 +72,7 @@ int game_init(int argc, char **argv) {
                 break;
             case 'h':
                 help_text(argv[0]);
+                break;
             case '?':
                 fprintf(stderr, "Try \'%s --help\' for more information\n", argv[0]);
                 exit(1);
@@ -89,6 +90,7 @@ int game_init(int argc, char **argv) {
     // TODO add some logic to choosing an arch
     arch = _backends[0];
     arch->init();
+    return 0;
 }
 
 void game_destroy(void) {
