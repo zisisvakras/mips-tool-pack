@@ -1,10 +1,10 @@
 # IGAME - Instruction Game
 
 ## Overview
-The `igame`, or `instruction game` was cretaed with the purpose of helping DIT students prepare for their final exam for the course "Computer Architecture I". More specifically, with an excersice that provides the hex or binary form of a code and the student must find its riscv assembly form. This game does exactly that - generates a random assembly command and shows the player its hex form. The player must then decode it and type the command. There are a few game variations and settings that are explained in the **Usage** section.
+The `igame`, or `instruction game` was created with the purpose of helping DIT students prepare for their final exam for the course "Computer Architecture I". More specifically, with an exercise that provides the hex or binary form of a code and the student must find its RISC-V assembly form. This game does exactly that - generates a random assembly command and shows the player its hex form. The player must then decode it and type the command. There are a few game variations and settings that are explained in the **Usage** section.
 
 ## Build
-To play the game, you need to download this repository. Then, move to the 'igame' directory and build the game by using `make`.
+To play the game, you need to download this repository. Then, move to the `igame` directory and build the game using `make`.
 
 ## Usage
 The game provides the following setting, by using specific flags:
