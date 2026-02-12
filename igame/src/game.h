@@ -1,6 +1,8 @@
 #ifndef GAME_H_
 #define GAME_H_
 
+#include <stdint.h>
+
 typedef struct game_settings {
     int cheat;
     int all;
@@ -13,6 +15,7 @@ typedef struct game_settings {
 extern game_settings settings;
 
 /* Rock defined in each arch */
+struct instr_t;
 typedef struct instr_t *instr_t;
 
 struct arch_t {
@@ -50,6 +53,12 @@ struct arch_t {
 
     /* Print the instruction in one line */
     void (*print)(instr_t);
+
+    /* Get instruction hex value */
+    int (*get_hex)(instr_t);
+
+    /* Get instruction as string */
+    void (*get_str)(instr_t, char *, int);
 
     /* Free an instruction */
     void (*free)(instr_t);
