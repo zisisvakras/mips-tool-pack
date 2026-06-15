@@ -8,6 +8,7 @@ typedef struct game_settings {
     int seq;
     int rev;
     long limit;
+    char *type_filter;
 } game_settings;
 
 extern game_settings settings;

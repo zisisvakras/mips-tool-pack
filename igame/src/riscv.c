@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <regex.h>
 #include <limits.h>
 #include <errno.h>
@@ -10,16 +9,16 @@
 #define iso_range(x, i, j) (((x) >> (i)) & ((1U << ((j) - (i) + 1)) - 1))
 
 typedef enum itype {
-    R_INSTR,
-    I_INSTR,
-    SF_INSTR, // madeup, its shift
-    L_INSTR,  // madeup, its load
-    E_INSTR,  // madeup, its only opcode
-    F_INSTR,  // fence shit
-    S_INSTR,
-    SB_INSTR,
-    U_INSTR,
-    UJ_INSTR
+    R_INSTR  = (1 << 0),
+    I_INSTR  = (1 << 1),
+    SF_INSTR = (1 << 2),  // madeup, its shift
+    L_INSTR  = (1 << 3),  // madeup, its load
+    E_INSTR  = (1 << 4),  // madeup, its only opcode
+    F_INSTR  = (1 << 5),  // fence shit
+    S_INSTR  = (1 << 6),
+    SB_INSTR = (1 << 7),
+    U_INSTR  = (1 << 8),
+    UJ_INSTR = (1 << 9),
 } itype;
 
 /* Source information for each instruction */
@@ -139,6 +138,9 @@ instr_src_t instrs_src[] = {
 int instrc = TOTAL_INSTRUCTIONS - HARD_COUNT;
 int regc = sizeof(regs) / sizeof(reg_t);
 
+static size_t filtered_instrs[TOTAL_INSTRUCTIONS];
+static int filtered_instrc;
+
 /* Instruction settings */
 typedef struct i_set_t {
     int req_args; /* Required arguments */
@@ -233,7 +235,7 @@ static int mystrnum(char *s, size_t immsz) {
 
 
 static instr_t __random(size_t idx) {
-    if (idx == -1ULL) idx = rand() % instrc;
+    if (idx == -1ULL) idx = filtered_instrs[rand() % filtered_instrc];
     instr_src_t isrc = instrs_src[idx];
     instr_t i = calloc(1, sizeof(*i));
     i->src = &instrs_src[idx];
@@ -313,10 +315,59 @@ static instr_t __random(size_t idx) {
     return i;
 }
 
+static void build_filter(void) {
+    static const struct { const char *name; itype type; } type_names[] = {
+        {"R",  R_INSTR | SF_INSTR},
+        {"I",  I_INSTR | E_INSTR | F_INSTR | L_INSTR},
+        {"S",  S_INSTR},
+        {"SB", SB_INSTR},
+        {"U",  U_INSTR},
+        {"UJ", UJ_INSTR},
+        {NULL, 0}
+    };
+
+    filtered_instrc = 0;
+
+    /* If no filter, include all instructions */
+    if (!settings.type_filter) {
+        for (int i = 0; i < instrc; i++)
+            filtered_instrs[filtered_instrc++] = i;
+        return;
+    }
+
+    /* Try type name first */
+    int matched_type = -1;
+    for (int j = 0; type_names[j].name; j++) {
+        if (!strcasecmp(settings.type_filter, type_names[j].name)) {
+            matched_type = type_names[j].type;
+            break;
+        }
+    }
+
+    if (matched_type != -1) {
+        for (int i = 0; i < instrc; i++)
+            if ((int)instrs_src[i].type & matched_type)
+                filtered_instrs[filtered_instrc++] = i;
+    } else {
+        /* Try exact instruction name */
+        for (int i = 0; i < instrc; i++)
+            if (!strcasecmp(instrs_src[i].name, settings.type_filter))
+                filtered_instrs[filtered_instrc++] = i;
+    }
+
+    if (filtered_instrc == 0) {
+        fprintf(stderr, "Unknown instruction type or name: '%s'\n"
+                        "Valid types: R, I, S, SB, U, UJ\n",
+                        settings.type_filter);
+        exit(1);
+    }
+}
+
 /* External shit */
 
 int arch_init(void) {
     if (settings.all) instrc += HARD_COUNT;
+    build_filter();
     return regcomp(&preg, preg_pat, REG_EXTENDED);
 }
 
@@ -325,9 +376,9 @@ instr_t seq_random_instr() {
     static size_t left[TOTAL_INSTRUCTIONS];
 
     if (seq_sz == 0) {
-        seq_sz = instrc;
-        for (size_t i = 0 ; i < seq_sz ; ++i)
-            left[i] = i;
+        seq_sz = filtered_instrc;
+        for (size_t i = 0; i < seq_sz; ++i)
+            left[i] = filtered_instrs[i];
     }
 
     size_t seq_idx = rand() % seq_sz;
