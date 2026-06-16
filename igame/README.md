@@ -6,13 +6,24 @@ The `igame`, or `instruction game` was created with the purpose of helping DIT s
 ## Build
 To play the game, you need to download this repository. Then, move to the `igame` directory and build the game using `make`.
 
-## Usage
-The game provides the following setting, by using specific flags:
+**Dependencies:**
+- `ncurses` - Required for building the TUI version
+  - Debian/Ubuntu: `sudo apt-get install libncurses-dev`
+  - Fedora/RHEL: `sudo dnf install ncurses-devel`
+  - macOS: `brew install ncurses`
+
+### Build Options
+- `make` or `make riscv` - Build the standard CLI version
+- `make tui` - Build the TUI (Terminal User Interface) version with color and menus
+- `make clean` - Clean build artifacts
+
+## Usage - Standard CLI
+The standard CLI game provides the following settings, by using specific flags:
 
 |Flag| Functionality|
 |----|----|
 | -a, --all  |    Include all instructions from the reference sheet|
-|-c, --cheat |  Answers before questions, mr. cheater...." |
+|-c, --cheat |  Answers before questions, mr. cheater.... |
 |-h, --help  |  Displays this text|
 |-x, --xnames |  Use the x?? names for registers|
 |-s, --seq   |   Do not repeat instructions|
@@ -21,9 +32,7 @@ The game provides the following setting, by using specific flags:
 
 Numerical values can be given in decimal, hexadecimal, octal and binary form (the last three with their respective prefixes: `0x` or `0X`, `0o` or `0O`, `0b` or `0B`).
 
-
-## Demo
-
+### Demo (CLI)
 ```sh
 $ ./igame -c
 Instruction is: 0x007c6533
@@ -45,4 +54,52 @@ Instruction is: 0xf503e393
 Please input your guess: ori t2, t2, 0xf50
 Correct, my instruction was: ori t2, t2, -176
 Your score is: 3 / 4 (75.00%)
+```
+
+## Usage - TUI Version
+The TUI (Terminal User Interface) version provides a rich, interactive experience with:
+- Color-coded feedback (green for correct, red for wrong)
+- Real-time statistics and streak tracking
+- Help menu with keyboard shortcuts
+- Game over screen with ratings
+
+### Running TUI
+```sh
+./igame-tui [OPTIONS]
+```
+
+### TUI Controls
+| Key | Action |
+|-----|--------|
+| ENTER | Submit your answer |
+| R | Restart the game |
+| H | Toggle help menu |
+| Q | Quit the game |
+| BACKSPACE | Delete last character |
+
+### TUI Features
+- **Score Tracking**: Shows current score, accuracy percentage, and streak
+- **Color Coding**: Green for correct answers, red for wrong answers
+- **Star Rating**: Get 5★ (90%+), 4★ (70%+), 3★ (50%+), 2★ (30%+), or 1★ below
+- **Cheat Mode**: When enabled with `-c`, shows the answer briefly before you guess
+- **Best Streak**: Tracks your longest consecutive correct answer streak
+
+### TUI Demo
+```
+╔══════════════════════════════════════╗
+║        RISC-V INSTRUCTION GAME       ║
+╠══════════════════════════════════════╣
+║  Score: 5 / 7                        ║
+║  Accuracy: 71.4%                     ║
+║  Streak: 2                           ║
+║  Best: 3                             ║
+╠══════════════════════════════════════╣
+║                                      ║
+║    Decode this instruction:          ║
+║          0x00A29533                  ║
+║                                      ║
+║    > add a0, s2, a1_                 ║
+║                                      ║
+║    [H] Help  [R] Restart  [Q] Quit   ║
+╚══════════════════════════════════════╝
 ```

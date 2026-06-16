@@ -482,6 +482,15 @@ void print_instr(instr_t i) {
                  i->n0, i->n1, i->n2, i->imm);
 }
 
+int get_instr_hex_value(instr_t i) {
+    return i->hex;
+}
+
+void get_instr_string(instr_t i, char *buf, int bufsize) {
+    snprintf(buf, bufsize, i_sets[i->src->type].fmt, i->src->name,
+             i->n0, i->n1, i->n2, i->imm);
+}
+
 void arch_destroy(void) {
     regfree(&preg);
 }
@@ -495,6 +504,8 @@ struct arch_t arch_riscv = {
     &validate_hex,
     &print_hex,
     &print_instr,
+    &get_instr_hex_value,
+    &get_instr_string,
     &free_instr,
     &arch_destroy
 };
