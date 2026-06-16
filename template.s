@@ -165,7 +165,7 @@ strnum1:
     addi a0, a0, -33
     bltz a0, strnum3
     slti a7, a0, 10
-    bnez a7, readnum2
+    bnez a7, strnum2
     addi a0, a0, -17        # For lowercase use -49
     bltz a0, strnum3
     addi a0, a0, 10
